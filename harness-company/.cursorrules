@@ -1,0 +1,79 @@
+You are working on harness-company, a Next.js 15 company introduction / portfolio website template.
+
+## Stack
+- Next.js 15 (App Router)
+- React 19
+- TypeScript (strict)
+- Tailwind CSS v4
+- Framer Motion
+- Supabase (contact form + admin auth)
+- Lucide React (icons)
+- Pretendard font
+
+## Key Conventions
+
+### Content
+All site content lives in `src/lib/data.ts`. When the user wants to change text, links, services, testimonials, or contact info, edit this file.
+
+### Colors
+Brand colors and neutrals are in `tailwind.config.ts`. The brand palette is mint/teal by default.
+
+### Components
+- UI primitives: `src/components/ui/` (Button, Card, AnimatedSection, PageHeader)
+- Page sections: `src/components/sections/` (Hero, About, Services, Portfolio, Testimonials, Contact)
+- Layout: `src/components/layout/` (Navbar, Footer)
+- Admin: `src/components/admin/` (AdminLayout, ContactTable, ProtectedRoute)
+
+### Animations
+All sections use `AnimatedSection` wrapper (intersection observer + Framer Motion fade-up).
+
+### Supabase
+- Client in `src/lib/supabase.ts`
+- Auth hook in `src/hooks/useAuth.ts`
+- Contact form saves to `contacts` table
+
+### File Ownership
+| Change | File |
+|---|---|
+| Site content | `src/lib/data.ts` |
+| Colors | `tailwind.config.ts` |
+| Font | `src/app/layout.tsx` |
+| Navigation | `src/lib/data.ts` → `navLinks` |
+| Contact form | `src/components/sections/Contact.tsx` |
+| Admin table | `src/components/admin/ContactTable.tsx` |
+| Animations | `src/components/ui/AnimatedSection.tsx` |
+
+### Code Style
+- Use TypeScript strict mode
+- Prefer named exports
+- Use `cn()` from `src/lib/utils.ts` for conditional class names
+- Icons: import specific icons from `lucide-react`
+- All client components must have `'use client'` directive
+- Comments at customization points for non-developer users
+
+## Deployment: GitHub → Vercel
+1. GitHub push → Vercel 자동 재배포 (main 브랜치)
+2. Vercel 환경변수: `.env.example` 키 전부 입력
+
+## DB 선택: Supabase vs Firebase
+| | Supabase | Firebase |
+|---|---|---|
+| DB | PostgreSQL (SQL) | Firestore (NoSQL) |
+| 무료 한도 | 500MB DB | 1GB 저장 |
+| 추천 용도 | 구조화 데이터, 관리자 패널 | 실시간, 모바일 |
+이 템플릿은 Supabase 사용. admin 경로는 robots.ts에서 크롤링 차단됨.
+
+## SEO 설정
+- `.env.local`에 `GOOGLE_SITE_VERIFICATION`, `NAVER_SITE_VERIFICATION` 입력
+- Google Search Console: https://search.google.com/search-console
+- 네이버 서치어드바이저: https://searchadvisor.naver.com
+- sitemap.xml / robots.txt 자동 생성됨 (`src/app/sitemap.ts`, `src/app/robots.ts`)
+- `public/og-image.png` (1200×630px) 추가 시 SNS 공유 미리보기 활성화
+
+## 도메인 연결 (가비아 → Cloudflare → Vercel)
+1. 가비아에서 도메인 구매
+2. Cloudflare에 도메인 등록 → 네임서버 2개 복사
+3. 가비아 네임서버를 Cloudflare 네임서버로 변경
+4. Vercel Settings > Domains에 도메인 추가 → CNAME 값 확인
+5. Cloudflare DNS에 CNAME 레코드 추가 (Proxy: DNS only)
+6. `.env.local`의 `NEXT_PUBLIC_SITE_URL` 실제 도메인으로 변경 후 재배포

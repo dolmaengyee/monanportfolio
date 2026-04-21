@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+/* ── Pretendard Font ─────────────────────────────────
+ *  Loaded via next/font in layout.tsx as a CSS variable.
+ *  Fallback: system-ui → sans-serif
+ * ──────────────────────────────────────────────────── */
+
+/* ── Custom utility layer ────────────────────────────
+ *  Add project-wide overrides here.
+ * ──────────────────────────────────────────────────── */
+@layer base {
+  body {
+    @apply bg-neutral-50 text-neutral-900 antialiased;
+  }
+}
+
+/* ── Smooth scroll ───────────────────────────────────  */
+html {
+  scroll-behavior: smooth;
+}

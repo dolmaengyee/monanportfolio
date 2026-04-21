@@ -1,0 +1,55 @@
+# Harness Landing - Cursor AI Rules
+
+## Project
+- Reusable Next.js 15 landing page template
+- React 19 + TypeScript strict + Tailwind CSS v4 + Framer Motion + Lucide React
+- Korean-optimized with Pretendard font
+
+## Key Rules
+- ALL text content lives in `src/lib/data.ts` - never hardcode strings in components
+- Brand colors are in `src/app/globals.css` under `@theme` block (`--color-brand-*`)
+- Use `AnimatedSection` wrapper for scroll-triggered animations
+- Use `Button` component from `src/components/ui/Button.tsx` (variants: primary, secondary, outline, ghost)
+- Use `Card` component for any boxed content
+- Icons use Lucide React - import individually, register in `iconMap` if used in data-driven sections
+
+## File Structure
+- `src/app/` - Pages, layout, global styles
+- `src/components/layout/` - Navbar, Footer
+- `src/components/sections/` - Hero, Features, Gallery, CTA
+- `src/components/ui/` - Reusable UI components
+- `src/lib/data.ts` - Site content (EDIT THIS for customization)
+- `src/lib/utils.ts` - cn() utility for class merging
+
+## Commands
+- `npm run dev` - Development server
+- `npm run build` - Production build
+- `npm run lint` - ESLint check
+
+## Adding New Sections
+1. Create component in `src/components/sections/`
+2. Add content data to `src/lib/data.ts`
+3. Import and add to `src/app/page.tsx`
+4. Wrap with `AnimatedSection` for animations
+
+## Styling
+- Tailwind CSS v4 with CSS-first config in globals.css
+- Brand colors: `brand-50` through `brand-950`
+- Font: Pretendard via next/font (var: `--font-pretendard`)
+- Keep it simple - this is for non-developer users
+
+## Deployment: GitHub → Vercel
+GitHub push → Vercel 자동 재배포. `.env.example` 키를 Vercel 환경변수에 입력.
+
+## SEO 설정
+- sitemap.xml / robots.txt 자동 생성 (`src/app/sitemap.ts`, `src/app/robots.ts`)
+- `.env.local`에 `GOOGLE_SITE_VERIFICATION`, `NAVER_SITE_VERIFICATION` 입력
+- Google Search Console: https://search.google.com/search-console
+- 네이버 서치어드바이저: https://searchadvisor.naver.com
+- `public/og-image.png` (1200×630px) → SNS/카카오톡 공유 미리보기
+
+## 도메인 연결 (가비아 → Cloudflare → Vercel)
+1. 가비아 도메인 구매 → Cloudflare Add a Site → 네임서버 복사
+2. 가비아 네임서버 변경 → Vercel Domains에 도메인 추가
+3. Cloudflare DNS: CNAME `@` + `www` → Vercel CNAME (Proxy: DNS only)
+4. `NEXT_PUBLIC_SITE_URL` 실제 도메인으로 변경 후 재배포

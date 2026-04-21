@@ -1,0 +1,20 @@
+{
+  "name": "create-harness",
+  "version": "1.0.0",
+  "description": "CLI to scaffold harness projects with GitHub + Vercel automation",
+  "type": "module",
+  "bin": {
+    "create-harness": "./index.js"
+  },
+  "scripts": {
+    "test": "node index.js --help"
+  },
+  "keywords": ["harness", "scaffold", "nextjs", "cli"],
+  "author": "kimsh16",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "prompts": "^2.4.2"
+  }
+}
