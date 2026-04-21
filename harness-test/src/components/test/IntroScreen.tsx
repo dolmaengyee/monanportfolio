@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { Layers } from "lucide-react"
 import { testConfig } from "@/data/config"
 import { Button } from "@/components/ui/Button"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
@@ -28,11 +29,11 @@ export function IntroScreen({ onStart }: IntroScreenProps) {
     <div className="flex flex-col items-center justify-center min-h-[85vh] px-6 text-center">
       <AnimatedSection delay={0}>
         <motion.div
-          className="text-6xl mb-6"
-          animate={{ rotate: [0, -5, 5, -5, 0], scale: [1, 1.1, 1] }}
+          className="w-16 h-16 rounded-2xl bg-brand-500/20 border border-brand-400/30 flex items-center justify-center mb-8"
+          animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
         >
-          🌀
+          <Layers className="w-8 h-8 text-brand-400" />
         </motion.div>
       </AnimatedSection>
 
@@ -79,7 +80,7 @@ export function IntroScreen({ onStart }: IntroScreenProps) {
 
       <AnimatedSection delay={0.5}>
         <p className="text-xs text-white/30 mt-6">
-          약 5분 소요 | 총 {testConfig.questionCount}문항
+          약 5분 소요 · 총 {testConfig.questionCount}문항
         </p>
       </AnimatedSection>
     </div>

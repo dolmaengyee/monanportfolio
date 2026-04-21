@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props) {
     title: `${row.name}님의 성향 결과 — ${result.name}`,
     description: result.tagline,
     openGraph: {
-      title: `${result.emoji} ${result.name}`,
+      title: `${result.name} — 성향 결과`,
       description: result.description.slice(0, 100),
     },
   }

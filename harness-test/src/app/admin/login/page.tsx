@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Lock } from "lucide-react"
 import { useAdminAuth } from "@/hooks/useAdminAuth"
 import { Button } from "@/components/ui/Button"
 
@@ -32,9 +33,11 @@ export default function AdminLoginPage() {
     <div className="flex-1 flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-4xl mb-3">🔐</div>
+          <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-6 h-6 text-white/60" />
+          </div>
           <h1 className="text-2xl font-bold text-white mb-1">관리자 로그인</h1>
-          <p className="text-white/50 text-sm">비밀번호를 입력하세요</p>
+          <p className="text-white/40 text-sm">비밀번호를 입력하세요</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

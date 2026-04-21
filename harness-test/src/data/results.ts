@@ -3,7 +3,8 @@ import type { TypeNumber } from "./questions"
 export interface ResultType {
   typeNumber: TypeNumber
   name: string
-  emoji: string
+  /** Lucide icon name — render with <LucideIcon name={result.icon} /> */
+  icon: string
   tagline: string
   description: string
   strengths: string[]
@@ -18,7 +19,7 @@ export const results: Record<TypeNumber, ResultType> = {
   1: {
     typeNumber: 1,
     name: "원칙을 지키는 사람",
-    emoji: "⚖️",
+    icon: "Scale",
     tagline: "더 나은 세상을 만드는 기준의 소유자",
     description:
       "높은 기준과 원칙을 가지고 세상을 더 나은 곳으로 만들고자 하는 당신. 옳고 그름에 대한 감각이 뛰어나며, 맡은 일에서만큼은 최선을 다합니다. 스스로에게 엄격한 만큼 진정성 있는 삶을 살아갑니다.",
@@ -41,7 +42,7 @@ export const results: Record<TypeNumber, ResultType> = {
   2: {
     typeNumber: 2,
     name: "따뜻한 마음의 사람",
-    emoji: "🤍",
+    icon: "Heart",
     tagline: "마음으로 세상을 돌보는 따뜻한 존재",
     description:
       "주변 사람들을 따뜻하게 돌보고 도움을 주는 것에서 진정한 의미를 찾는 당신. 섬세한 공감 능력으로 상대방의 필요를 먼저 알아채고, 관계 속에서 자신의 가치를 발견합니다.",
@@ -64,7 +65,7 @@ export const results: Record<TypeNumber, ResultType> = {
   3: {
     typeNumber: 3,
     name: "목표를 향해 달리는 사람",
-    emoji: "⭐",
+    icon: "Trophy",
     tagline: "성취를 통해 빛나는 실행의 달인",
     description:
       "명확한 목표를 세우고 그것을 향해 에너지를 집중하는 당신. 어떤 환경에서도 성과를 만들어내는 뛰어난 적응력과 실행력을 가지고 있으며, 자신의 잠재력을 최대한 발휘합니다.",
@@ -87,7 +88,7 @@ export const results: Record<TypeNumber, ResultType> = {
   4: {
     typeNumber: 4,
     name: "깊이 있는 감성의 사람",
-    emoji: "🌊",
+    icon: "Waves",
     tagline: "감수성으로 세상을 바라보는 독창적 영혼",
     description:
       "풍부한 감수성과 독창적인 내면의 세계를 가진 당신. 진정성 있는 경험과 깊은 의미를 추구하며, 아름다움과 감동에 민감하게 반응하는 섬세한 사람입니다.",
@@ -110,7 +111,7 @@ export const results: Record<TypeNumber, ResultType> = {
   5: {
     typeNumber: 5,
     name: "지식을 탐구하는 사람",
-    emoji: "🔭",
+    icon: "Compass",
     tagline: "통찰로 세상을 이해하는 지식의 탐험가",
     description:
       "세상을 깊이 이해하고자 끊임없이 탐구하는 당신. 방대한 지식과 예리한 통찰력을 바탕으로 핵심을 꿰뚫어보며, 독립적이고 사려 깊은 판단을 내립니다.",
@@ -133,7 +134,7 @@ export const results: Record<TypeNumber, ResultType> = {
   6: {
     typeNumber: 6,
     name: "신뢰를 소중히 여기는 사람",
-    emoji: "🛡️",
+    icon: "Shield",
     tagline: "안전과 신뢰로 공동체를 지키는 든든한 버팀목",
     description:
       "신뢰와 안전을 중요하게 여기며 주변 사람들을 보호하려는 당신. 미리 위험을 감지하고 대비하는 뛰어난 직관과 충성스러운 마음으로 공동체를 지킵니다.",
@@ -156,7 +157,7 @@ export const results: Record<TypeNumber, ResultType> = {
   7: {
     typeNumber: 7,
     name: "자유를 사랑하는 사람",
-    emoji: "🎈",
+    icon: "Sparkles",
     tagline: "새로운 가능성을 향해 날아가는 자유로운 영혼",
     description:
       "호기심 가득한 눈으로 세상의 가능성을 탐색하는 당신. 즐거움과 새로운 경험에 대한 열린 마음이 주변 사람들에게 에너지와 영감을 전달합니다.",
@@ -179,7 +180,7 @@ export const results: Record<TypeNumber, ResultType> = {
   8: {
     typeNumber: 8,
     name: "강인한 의지의 사람",
-    emoji: "🔥",
+    icon: "Flame",
     tagline: "강한 의지로 세상을 주도하는 리더",
     description:
       "강한 의지와 결단력으로 목표를 향해 직진하는 당신. 불의에 맞서고 약자를 보호하려는 정의감과 타인을 이끄는 타고난 리더십으로 변화를 만들어냅니다.",
@@ -202,7 +203,7 @@ export const results: Record<TypeNumber, ResultType> = {
   9: {
     typeNumber: 9,
     name: "조화를 이루는 사람",
-    emoji: "☁️",
+    icon: "Cloud",
     tagline: "평화로 세상을 연결하는 따뜻한 중재자",
     description:
       "주변과의 평화와 조화를 소중히 여기는 당신. 다양한 관점을 수용하고 이해하는 넓은 마음으로 갈등을 중재하고 모두가 편안한 분위기를 만들어냅니다.",
