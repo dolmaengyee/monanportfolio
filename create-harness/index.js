@@ -153,6 +153,12 @@ async function main() {
       cpSync(setupSrc, join(targetDir, 'setup.mjs'))
     }
 
+    // Copy shared .harness/ folder (agent role prompts)
+    const harnessSrc = resolve(__dirname, '..', '.harness')
+    if (existsSync(harnessSrc)) {
+      cpSync(harnessSrc, join(targetDir, '.harness'), { recursive: true })
+    }
+
     // Update package.json: add "setup" script + harness marker
     const pkgPath = join(targetDir, 'package.json')
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
@@ -208,6 +214,11 @@ async function main() {
     console.log(chalk.gray('      · 관리자 비밀번호 설정'))
   }
   console.log(chalk.gray('      · 내 도메인 연결 안내\n'))
+
+  console.log(chalk.bold('  AI로 커스터마이징:\n'))
+  console.log(chalk.gray('    .harness/agents/        — 역할별 전문 프롬프트 (카피/디자인/빌드/리뷰/디버그)'))
+  console.log(chalk.gray('    .harness/agents/README  — 사용법 먼저 읽어보세요'))
+  console.log(chalk.gray('    CLAUDE.md               — AI 툴용 프로젝트 가이드\n'))
 
   // ── Offer to start dev server now ───────────────────────────────────────────
   const { startNow } = await prompts({
