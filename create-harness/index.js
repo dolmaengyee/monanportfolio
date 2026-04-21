@@ -46,7 +46,7 @@ function replaceInFile(filePath, from, to) {
 
 function openBrowser(url) {
   try {
-    const cmd = process.platform === 'win32' ? `start "${url}"`
+    const cmd = process.platform === 'win32' ? `start "" "${url}"`
               : process.platform === 'darwin' ? `open "${url}"`
               : `xdg-open "${url}"`
     execSync(cmd, { stdio: 'ignore' })
@@ -57,6 +57,7 @@ function addVercelEnv(key, value, env = 'production') {
   return new Promise((resolve) => {
     const child = spawn('vercel', ['env', 'add', key, env], {
       stdio: ['pipe', 'pipe', 'pipe'],
+      shell: true,
     })
     child.stdin.write(value + '\n')
     child.stdin.end()
@@ -381,7 +382,7 @@ async function main() {
     if (deployVercel) {
       console.log(chalk.cyan('\n  Vercel 연결 중... (브라우저가 열릴 수 있습니다)\n'))
       try {
-        const child = spawn('vercel', ['link', '--yes'], { cwd: targetDir, stdio: 'inherit' })
+        const child = spawn('vercel', ['link', '--yes'], { cwd: targetDir, stdio: 'inherit', shell: true })
         await new Promise((resolve) => child.on('close', resolve))
         vercelLinked = existsSync(join(targetDir, '.vercel', 'project.json'))
         if (vercelLinked) {
