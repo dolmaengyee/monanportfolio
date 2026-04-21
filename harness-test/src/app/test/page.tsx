@@ -9,15 +9,20 @@ import { ProgressBar } from "@/components/test/ProgressBar"
 import { Footer } from "@/components/layout/Footer"
 
 function TestFlow() {
-  const { currentQuestion, isComplete, result, answerQuestion, totalQuestions } =
-    useTest()
+  const { currentQuestion, isComplete, finalType, answerQuestion, totalQuestions } = useTest()
   const router = useRouter()
 
   useEffect(() => {
-    if (isComplete && result) {
+    // Redirect if no participant info
+    const name = typeof window !== "undefined" ? sessionStorage.getItem("participant-name") : null
+    if (!name) router.replace("/")
+  }, [router])
+
+  useEffect(() => {
+    if (isComplete && finalType) {
       router.push("/result")
     }
-  }, [isComplete, result, router])
+  }, [isComplete, finalType, router])
 
   const question = questions[currentQuestion]
   if (!question) return null

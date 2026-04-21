@@ -1,37 +1,46 @@
-/**
- * Score calculation logic.
- * This module handles all type-code operations and must NEVER be exposed to the UI layer.
- */
+import type { TypeNumber, LikertAnswer } from "@/data/questions"
 
-import type { TypeCode } from "@/data/questions"
+export type TypeScores = Record<TypeNumber, number>
+export type TypeRanking = Array<{ type: TypeNumber; score: number }>
 
-export function calculateResult(answers: TypeCode[]): TypeCode {
-  const counts: Record<TypeCode, number> = { A: 0, B: 0, C: 0, D: 0 }
-
-  for (const type of answers) {
-    counts[type]++
+export function calculateScores(answers: LikertAnswer[]): TypeScores {
+  const scores: TypeScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
+  for (const answer of answers) {
+    scores[answer.typeNumber] += answer.score
   }
+  return scores
+}
 
-  let maxCount = 0
-  let result: TypeCode = "A"
-  const tied: TypeCode[] = []
+export function calculateRanking(scores: TypeScores): TypeRanking {
+  return (Object.entries(scores) as [string, number][])
+    .map(([type, score]) => ({ type: Number(type) as TypeNumber, score }))
+    .sort((a, b) => b.score - a.score)
+}
 
-  for (const [type, count] of Object.entries(counts) as [TypeCode, number][]) {
-    if (count > maxCount) {
-      maxCount = count
-      result = type
-      tied.length = 0
-      tied.push(type)
-    } else if (count === maxCount) {
-      tied.push(type)
+export function calculateResult(answers: LikertAnswer[]): {
+  finalType: TypeNumber
+  scores: TypeScores
+  ranking: TypeRanking
+} {
+  const scores = calculateScores(answers)
+  const ranking = calculateRanking(scores)
+  const topScore = ranking[0].score
+  const tied = ranking.filter((r) => r.score === topScore)
+
+  // Tiebreak: highest single answer score among tied types
+  let finalType = tied[0].type
+  if (tied.length > 1) {
+    let maxSingle = -1
+    for (const { type } of tied) {
+      const maxForType = Math.max(
+        ...answers.filter((a) => a.typeNumber === type).map((a) => a.score)
+      )
+      if (maxForType > maxSingle) {
+        maxSingle = maxForType
+        finalType = type
+      }
     }
   }
 
-  // Tie-breaking: use the last answer given
-  if (tied.length > 1) {
-    const lastAnswer = answers[answers.length - 1]
-    return tied.includes(lastAnswer) ? lastAnswer : tied[0]
-  }
-
-  return result
+  return { finalType, scores, ranking }
 }

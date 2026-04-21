@@ -7,67 +7,84 @@ import {
   useCallback,
   type ReactNode,
 } from "react"
-import type { TypeCode } from "@/data/questions"
+import type { LikertAnswer, LikertScore, TypeNumber } from "@/data/questions"
 import { questions } from "@/data/questions"
 import { calculateResult } from "@/lib/testLogic"
+import type { TypeScores, TypeRanking } from "@/lib/testLogic"
 
 interface TestState {
-  answers: TypeCode[]
+  name: string
+  phone: string
+  answers: LikertAnswer[]
   currentQuestion: number
-  result: TypeCode | null
+  finalType: TypeNumber | null
+  scores: TypeScores | null
+  ranking: TypeRanking | null
+  resultId: string | null
   isComplete: boolean
 }
 
 interface TestContextType extends TestState {
-  answerQuestion: (type: TypeCode) => void
+  setParticipantInfo: (name: string, phone: string) => void
+  answerQuestion: (score: LikertScore) => void
   reset: () => void
+  setResultId: (id: string) => void
   totalQuestions: number
 }
 
 const TestContext = createContext<TestContextType | null>(null)
 
 const initialState: TestState = {
+  name: "",
+  phone: "",
   answers: [],
   currentQuestion: 0,
-  result: null,
+  finalType: null,
+  scores: null,
+  ranking: null,
+  resultId: null,
   isComplete: false,
 }
 
 export function TestProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<TestState>(initialState)
 
-  const answerQuestion = useCallback((type: TypeCode) => {
+  const setParticipantInfo = useCallback((name: string, phone: string) => {
+    setState((prev) => ({ ...prev, name, phone }))
+  }, [])
+
+  const answerQuestion = useCallback((score: LikertScore) => {
     setState((prev) => {
-      const newAnswers = [...prev.answers, type]
+      const question = questions[prev.currentQuestion]
+      if (!question) return prev
+
+      const newAnswer: LikertAnswer = {
+        questionId: question.id,
+        score,
+        typeNumber: question.typeNumber,
+      }
+      const newAnswers = [...prev.answers, newAnswer]
       const nextQ = prev.currentQuestion + 1
 
       if (nextQ >= questions.length) {
-        const result = calculateResult(newAnswers)
-        // Persist to sessionStorage for cross-page access
+        const { finalType, scores, ranking } = calculateResult(newAnswers)
         if (typeof window !== "undefined") {
-          sessionStorage.setItem("test-result", result)
-          sessionStorage.setItem("test-answers", JSON.stringify(newAnswers))
+          sessionStorage.setItem("test-result", JSON.stringify({ finalType, scores, ranking, answers: newAnswers }))
         }
-        return {
-          answers: newAnswers,
-          currentQuestion: prev.currentQuestion,
-          result,
-          isComplete: true,
-        }
+        return { ...prev, answers: newAnswers, finalType, scores, ranking, isComplete: true }
       }
 
-      return {
-        ...prev,
-        answers: newAnswers,
-        currentQuestion: nextQ,
-      }
+      return { ...prev, answers: newAnswers, currentQuestion: nextQ }
     })
+  }, [])
+
+  const setResultId = useCallback((id: string) => {
+    setState((prev) => ({ ...prev, resultId: id }))
   }, [])
 
   const reset = useCallback(() => {
     if (typeof window !== "undefined") {
       sessionStorage.removeItem("test-result")
-      sessionStorage.removeItem("test-answers")
     }
     setState(initialState)
   }, [])
@@ -76,8 +93,10 @@ export function TestProvider({ children }: { children: ReactNode }) {
     <TestContext.Provider
       value={{
         ...state,
+        setParticipantInfo,
         answerQuestion,
         reset,
+        setResultId,
         totalQuestions: questions.length,
       }}
     >
