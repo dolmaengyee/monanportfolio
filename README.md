@@ -3,8 +3,6 @@
 웹사이트를 빠르고 퀄리티 있게 만들기 위한 AI-ready 프로젝트 템플릿 모음.
 코딩을 몰라도 AI 도구와 함께라면 만들 수 있어요.
 
-![Harness 생태계 지도](./docs/harness-ecosystem.png)
-
 ---
 
 ## 📚 학습 자료
@@ -12,7 +10,6 @@
 | 문서 | 설명 |
 |---|---|
 | [docs/CONCEPTS.md](./docs/CONCEPTS.md) | 웹 개발 개념 완전 입문 가이드 (HTML부터 배포까지) |
-| [docs/harness-ecosystem.png](./docs/harness-ecosystem.png) | 한눈에 보는 생태계 도식화 이미지 |
 
 > 처음 시작한다면 **CONCEPTS.md**를 먼저 읽어보세요. HTML이 뭔지 몰라도 괜찮아요.
 
