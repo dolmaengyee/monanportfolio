@@ -1,168 +1,181 @@
 # 환경 설정 가이드
 
-> AI 도구 하나만 켜고, 아래 프롬프트를 복붙하면 나머지는 AI가 다 해줘요.
-> 설치, 가입, 클론 — 전부요.
+> AI 도구 하나만 켜고, 아래 프롬프트를 복붙하세요.
+> 질문은 딱 2개 — "뭘 만들지" + "이름은 뭘로 할지"
+> 브라우저에 내 사이트가 바로 떠요.
+
+---
+
+## 어떻게 작동하나요?
+
+**1단계 — 사이트 만들기** (기본, 질문 2개)
+- 뭘 만들고 싶은지 선택 (랜딩/회사/테스트)
+- 프로젝트 이름 입력
+- 자동으로: 파일 복사 → 패키지 설치 → Git 세팅 → 브라우저에 사이트 띄우기
+
+**2단계 — 추가 기능** (필요할 때만, `npm run setup`)
+- 인터넷에 올리기 (GitHub + Vercel)
+- 데이터 저장소 (Supabase)
+- 관리자 비밀번호
+- 내 도메인 연결
+
+두 단계가 **분리**되어 있어요. 일단 1단계로 돌아가는 걸 보고, 나중에 필요한 것만 2단계에서 추가하면 돼요.
 
 ---
 
 ## 먼저 이것만 이해해요
 
-| 이름 | 역할 | 비유 |
+| 이름 | 역할 | 언제 필요? |
 |---|---|---|
-| **Node.js** | 내 컴퓨터에서 JavaScript 실행 | 프로젝트를 돌리는 엔진 |
-| **Git** | 코드 변경 이력 관리 | 저장 + 되돌리기 버튼 |
-| **GitHub** | 코드 온라인 저장소 | 코드용 구글 드라이브 |
-| **Vercel** | 자동 배포 서버 | push하면 자동으로 사이트 업데이트 |
-| **Supabase** | 데이터베이스 | 테스트 결과, 폼 데이터 저장 |
-| **Cloudflare** | 도메인 DNS 관리 | 도메인 ↔ 서버 연결 다리 |
-| **가비아** | 도메인 구매 | 내 주소(도메인) 사는 곳 |
+| **Node.js** | 내 컴퓨터에서 JavaScript 실행 | 처음부터 (필수) |
+| **Git** | 코드 변경 이력 관리 | 처음부터 (필수) |
+| **GitHub** | 코드 온라인 저장소 | 2단계: 배포할 때 |
+| **Vercel** | 자동 배포 서버 | 2단계: 배포할 때 |
+| **Supabase** | 데이터베이스 | 2단계: 저장 기능 필요할 때 |
+| **Cloudflare** | 도메인 DNS 관리 | 2단계: 내 도메인 쓸 때 |
+| **가비아** | 도메인 구매 | 2단계: 내 도메인 쓸 때 |
+
+**핵심:** 처음엔 Node.js + Git만 있으면 돼요. 나머지는 필요할 때 `npm run setup`이 하나씩 안내해줘요.
 
 ---
 
-## 시작 전 — 계정 먼저 만들어요
+## 계정은 나중에 만들어도 돼요
 
-AI가 진행하다가 막히는 걸 줄이려면 미리 만들어두는 게 좋아요.
-**GitHub 하나만 만들면 Vercel · Supabase는 그걸로 바로 로그인돼요.**
+**지금 당장 필요한 것은 없어요.** 1단계는 인터넷 없이도 완료돼요.
 
-| 순서 | 서비스 | 가입 방법 |
+2단계에서 각 기능을 선택하면 그때그때 "이 계정이 필요해요"라고 안내하고 브라우저를 자동으로 열어줘요. **GitHub 하나만 있으면** Vercel · Supabase는 그걸로 바로 로그인돼요.
+
+| 서비스 | 주소 | 언제? |
 |---|---|---|
-| 1 | **GitHub** | [github.com](https://github.com) → Sign up (이메일 또는 Google) |
-| 2 | **Vercel** | [vercel.com](https://vercel.com) → Continue with GitHub |
-| 3 | **Supabase** | [supabase.com](https://supabase.com) → Continue with GitHub |
-| 4 | **Cloudflare** | [cloudflare.com](https://cloudflare.com) → Sign up (도메인 쓸 때만) |
-| 5 | **가비아** | [gabia.com](https://gabia.com) → 회원가입 (도메인 살 때만) |
-
-> **심리/성향 테스트(test) 타입을 쓸 경우:** Supabase 계정을 미리 만들어두세요.
-> `node index.js` 실행 중간에 Supabase 프로젝트 생성 화면이 브라우저에 자동으로 열립니다.
-> 그때 프로젝트를 만들고 돌아오면 됩니다.
+| GitHub | [github.com](https://github.com) | 배포 기능 쓸 때 |
+| Vercel | [vercel.com](https://vercel.com) | 배포 기능 쓸 때 (GitHub으로 로그인) |
+| Supabase | [supabase.com](https://supabase.com) | 저장 기능 쓸 때 (GitHub으로 로그인) |
 
 ---
 
 ## AI 도구 선택 (구독 중인 것 1개만)
 
----
-
-## Claude Desktop 사용자
+### Claude Desktop 사용자
 
 **설치:** [claude.ai/download](https://claude.ai/download) → 다운로드 → 로그인
 
-**Claude Desktop을 열고, 아래 프롬프트를 붙여넣으세요.**
-
-> **`[Mac 또는 Windows]` 부분만 본인 OS로 바꾸세요. 나머지는 그대로 두면 됩니다.**
+**아래 프롬프트에서 `[Mac 또는 Windows]` 부분만 본인 OS로 바꾸고 붙여넣으세요.**
 
 ```
 나 웹사이트 만들려고 하는데 환경 세팅부터 도와줘.
 
-지금 내 컴퓨터에 뭐가 설치되어 있는지 먼저 확인해줘.
-없는 것들은 직접 설치해줘. 필요한 것들은:
+내 컴퓨터에 아래 것들이 설치되어 있는지 확인하고, 없으면 설치해줘:
 - Node.js (nvm으로, LTS 버전)
 - Git
-- GitHub CLI (gh)
-- Vercel CLI
 
-그 다음에 아래 순서대로 진행해줘:
-1. GitHub 로그인 (gh auth login)
-2. Vercel 로그인 (vercel login)
-3. 바탕화면에 harness 레포 클론
+다 설치됐으면:
+1. 바탕화면에 y-harness 레포 클론
    git clone https://github.com/sana197111/y-harness.git
-4. y-harness/create-harness 폴더로 이동해서 npm install 하고 node index.js 실행
 
-node index.js 실행 중에는 중간에 여러 번 멈추면서 질문이 나와.
-브라우저가 자동으로 열릴 수 있고, 값을 직접 입력해야 할 수도 있어.
-그때마다 뭘 해야 하는지 친절하게 설명해줘.
+2. y-harness/create-harness 폴더로 이동
+
+3. npm install 실행 (1회만)
+
+4. node index.js 실행
+
+node index.js 에서는 딱 질문 2개만 나와:
+- 뭘 만들고 싶은지 (랜딩/회사/테스트 중 선택)
+- 프로젝트 이름
+
+그러고 나서 브라우저에 내 사이트가 자동으로 떠.
+
+나중에 인터넷 배포나 데이터베이스가 필요하면 그때 프로젝트 폴더에서
+npm run setup 실행하면 메뉴가 나와서 하나씩 따라가면 돼.
 
 내 OS는 [Mac 또는 Windows]이야.
 ```
 
----
+### Codex 사용자
 
-## Codex 사용자
+**설치:** [codex.openai.com](https://codex.openai.com) → 다운로드 또는 웹 → 로그인
+프롬프트는 위 Claude Desktop 것과 동일합니다. (OS만 본인 것으로)
 
-**설치:** [codex.openai.com](https://codex.openai.com) → 다운로드 또는 웹 사용 → 로그인
+### Antigravity 사용자
 
-**Codex를 열고, 아래 프롬프트를 붙여넣으세요.**
-
-> **`[Mac 또는 Windows]` 부분만 본인 OS로 바꾸세요.**
-
-```
-나 웹사이트 만들려고 하는데 환경 세팅부터 도와줘.
-
-지금 내 컴퓨터에 뭐가 설치되어 있는지 먼저 확인해줘.
-없는 것들은 직접 설치해줘. 필요한 것들은:
-- Node.js (nvm으로, LTS 버전)
-- Git
-- GitHub CLI (gh)
-- Vercel CLI
-
-그 다음에 아래 순서대로 진행해줘:
-1. GitHub 로그인 (gh auth login)
-2. Vercel 로그인 (vercel login)
-3. 바탕화면에 harness 레포 클론
-   git clone https://github.com/sana197111/y-harness.git
-4. y-harness/create-harness 폴더로 이동해서 npm install 하고 node index.js 실행
-
-node index.js 실행 중에는 중간에 여러 번 멈추면서 질문이 나와.
-브라우저가 자동으로 열릴 수 있고, 값을 직접 입력해야 할 수도 있어.
-그때마다 뭘 해야 하는지 친절하게 설명해줘.
-
-내 OS는 [Mac 또는 Windows]이야.
-```
+**설치:** Google에서 "Antigravity AI" 검색 → 설치 → Google 계정 로그인
+프롬프트는 위 Claude Desktop 것과 동일합니다. (OS만 본인 것으로)
 
 ---
 
-## Antigravity 사용자
+## 1단계가 끝나면
 
-**설치:** Google에서 "Antigravity AI" 검색 → 설치 → Google 계정으로 로그인
-
-**Antigravity를 열고, 아래 프롬프트를 붙여넣으세요.**
-
-> **`[Mac 또는 Windows]` 부분만 본인 OS로 바꾸세요.**
+터미널에 이런 메시지가 뜹니다:
 
 ```
-나 웹사이트 만들려고 하는데 환경 세팅부터 도와줘.
+  내 랜딩 페이지가 준비됐어요!
 
-지금 내 컴퓨터에 뭐가 설치되어 있는지 먼저 확인해줘.
-없는 것들은 직접 설치해줘. 필요한 것들은:
-- Node.js (nvm으로, LTS 버전)
-- Git
-- GitHub CLI (gh)
-- Vercel CLI
+  위치: /Users/이름/Desktop/my-landing
 
-그 다음에 아래 순서대로 진행해줘:
-1. GitHub 로그인 (gh auth login)
-2. Vercel 로그인 (vercel login)
-3. 바탕화면에 harness 레포 클론
-   git clone https://github.com/sana197111/y-harness.git
-4. y-harness/create-harness 폴더로 이동해서 npm install 하고 node index.js 실행
+  지금 할 수 있는 것:
+    cd my-landing
+    npm run dev    (브라우저에서 바로 확인)
 
-node index.js 실행 중에는 중간에 여러 번 멈추면서 질문이 나와.
-브라우저가 자동으로 열릴 수 있고, 값을 직접 입력해야 할 수도 있어.
-그때마다 뭘 해야 하는지 친절하게 설명해줘.
+  나중에 더 필요하면 (필요할 때만):
+    npm run setup  (메뉴에서 선택)
+      · 인터넷에 올리기 (GitHub + Vercel)
+      · 내 도메인 연결 안내
 
-내 OS는 [Mac 또는 Windows]이야.
+  지금 바로 브라우저에서 사이트를 열어볼까요? (Y/n)
 ```
+
+**Y 누르면 브라우저가 자동으로 열려요** (`http://localhost:3000`)
+
+사이트를 끄려면 터미널에서 `Ctrl + C`
 
 ---
 
-## 세팅 완료 확인
+## 2단계 — 필요할 때만
 
-AI가 모든 과정을 마치면 터미널에 **내 사이트 주소**가 출력됩니다.
+프로젝트 폴더로 가서:
 
 ```bash
-# 로컬에서 확인
-cd 프로젝트이름
-npm run dev
-# 브라우저에서 http://localhost:3000 열기
+cd 내프로젝트이름
+npm run setup
 ```
 
-```bash
-# 설치 확인
-node -v           # v22.x.x 나오면 OK
-git --version     # git version 2.x.x 나오면 OK
-gh --version      # gh version 2.x.x 나오면 OK
-vercel --version  # Vercel CLI x.x.x 나오면 OK
+그러면 메뉴가 뜨고, 각 옵션마다 **이게 뭐고, 왜 필요하고, 얼마나 걸리는지** 먼저 알려줘요. 원하는 것만 골라서 하면 됩니다.
+
 ```
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  my-test-site  ·  성향 테스트
+  GitHub 연결 안 됨  ·  Vercel 연결 안 됨
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  뭘 도와드릴까요?
+
+  [1] 인터넷에 올리기
+      GitHub + Vercel로 전 세계에 공개 (무료, 5분)
+
+  [2] 데이터 저장소 설정
+      Supabase 무료 DB — 테스트 결과 저장
+
+  [3] 관리자 비밀번호 설정
+      /admin 페이지 접속 비밀번호
+
+  [4] 내 도메인 연결 안내
+      가비아 → Cloudflare → Vercel 연결 방법
+
+  [5] 나가기
+
+  선택:
+```
+
+**몇 번이고 다시 실행해도 돼요.** 한 번에 다 안 해도 되고, 필요해질 때마다 돌아와서 하면 됩니다.
 
 ---
 
-이제 다음 페이지에서 실제로 웹사이트를 만들어봐요!
+## 설치 확인
+
+```bash
+node -v       # v22.x.x 나오면 OK
+git --version # git version 2.x.x 나오면 OK
+```
+
+**추가로 2단계에서 필요한 것** (그때 AI가 설치 안내해줘요):
+- `gh` (GitHub CLI) — 배포 기능 쓸 때
+- `vercel` (Vercel CLI) — 배포 기능 쓸 때
