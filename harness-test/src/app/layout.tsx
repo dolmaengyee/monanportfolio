@@ -26,17 +26,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: testConfig.title,
     description: testConfig.subtitle,
-    images: [{ url: testConfig.ogImage, width: 1200, height: 630, alt: testConfig.title }],
     type: "website",
     locale: 'ko_KR',
     url: BASE_URL,
+    // OG 이미지는 src/app/opengraph-image.tsx 가 자동 생성 (동적 PNG)
   },
   twitter: {
     card: "summary_large_image",
     title: testConfig.title,
     description: testConfig.subtitle,
-    images: [testConfig.ogImage],
+    // twitter 이미지도 opengraph-image 를 자동 재사용
   },
+  // favicon 은 src/app/icon.svg 에서 자동 감지
   // 구글 서치콘솔 & 네이버 서치어드바이저 인증 코드 (.env.local에서 설정)
   ...(process.env.GOOGLE_SITE_VERIFICATION && {
     verification: { google: process.env.GOOGLE_SITE_VERIFICATION },
