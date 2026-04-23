@@ -123,8 +123,11 @@ node index.js
 | `.cursorrules` | Codex / Cursor |
 | `.antigravity.md` | Antigravity |
 
-**콘텐츠 변경**: `src/lib/data.ts` 하나만 수정하면 돼요.
-**색상 변경**: `tailwind.config.ts` (company/test) 또는 `globals.css` (landing)
+**작업 방식**: 템플릿은 의도적으로 비어있는 상태로 배포됩니다. AI에게 만들고 싶은 사이트를 자유 형식으로 설명하면, **역질문(무드·레퍼런스·페이지 구성·폰트 방향)** 으로 방향을 확정한 뒤 디자인과 코드를 처음부터 작성해요. 미리 깔린 Hero/Features 같은 섹션을 채워 넣는 방식이 아닙니다.
+
+**색상 변경**: `tailwind.config.ts` (company/test) 또는 `globals.css` (landing)의 `@theme` 블록
+**폰트 변경**: `src/app/layout.tsx`에서 `next/font/google` import만 교체 (예: `Noto_Sans_KR` → `Nanum_Myeongjo` + `Black_Han_Sans` 조합)
+**사이트 이름/SEO**: `src/lib/data.ts`의 `siteConfig`
 
 ---
 
@@ -229,7 +232,7 @@ Cloudflare → 해당 도메인 → DNS → Records → Add record:
 - **프레임워크**: Next.js 15 (App Router) + React 19
 - **언어**: TypeScript (strict)
 - **스타일**: Tailwind CSS v4 + Framer Motion
-- **폰트**: Pretendard
+- **폰트**: `next/font/google` — 고정된 폰트 없음. Noto Sans KR이 플레이스홀더로 깔려 있고, 프로젝트 무드에 맞춰 디자이너가 교체
 - **DB/Auth**: Supabase (company/test 하네스)
 - **배포**: Vercel
 - **DNS**: Cloudflare
