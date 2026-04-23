@@ -1,22 +1,40 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Noto_Sans_KR } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { siteConfig } from "@/lib/data";
 import "./globals.css";
 
-/* ── Pretendard Font ──────────────────────────────────
- *  Korean-friendly variable font.
- *  npm 패키지로 설치되어 있어 별도 다운로드 불필요.
- * ──────────────────────────────────────────────────── */
-const pretendard = localFont({
-  src: [
-    {
-      path: "../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2",
-      style: "normal",
-    },
-  ],
-  variable: "--font-pretendard",
+/* ── Font ────────────────────────────────────────────────────────
+ *  PLACEHOLDER — Noto Sans KR is a safe Korean + Latin default.
+ *
+ *  This template does NOT ship a fixed font. During the Discovery
+ *  phase (see .harness/agents/planner.md), the planner asks the
+ *  user about mood / reference / tone and the designer picks
+ *  1–2 Google Fonts that actually match the project.
+ *
+ *  How to swap:
+ *  1. Pick fonts from https://fonts.google.com (filter: Korean if needed)
+ *  2. Change the import below — e.g.
+ *     `import { Nanum_Myeongjo, Black_Han_Sans } from "next/font/google"`
+ *  3. For an editorial look, pair a display font (headings) with a
+ *     clean sans (body) — expose both as CSS variables and use
+ *     them via `font-[var(--font-display)]` / `font-sans`.
+ *  4. Update the `className` on <html> to include every variable.
+ *
+ *  Common Korean-friendly Google Fonts:
+ *  - Noto Sans KR (neutral, all-purpose)
+ *  - Nanum Gothic / Nanum Myeongjo (editorial)
+ *  - Gowun Dodum (soft, rounded)
+ *  - IBM Plex Sans KR (tech, geometric)
+ *  - Black Han Sans (display, headline-only)
+ *  - Jua / Do Hyeon (playful, hand-drawn)
+ * ───────────────────────────────────────────────────────────── */
+const fontSans = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
+  variable: "--font-sans",
   display: "swap",
-  fallback: ["system-ui", "sans-serif"],
 });
 
 /* ── SEO Metadata ─────────────────────────────────────
@@ -75,8 +93,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={pretendard.variable}>
-      <body className="font-sans">{children}</body>
+    <html lang="ko" className={fontSans.variable}>
+      <body className="font-sans">
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

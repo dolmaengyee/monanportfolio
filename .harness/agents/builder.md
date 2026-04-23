@@ -44,6 +44,16 @@ boundaries:
 
 ## 작업 원칙
 
+### 0. 레퍼런스가 있으면 무조건 따른다
+
+사용자가 디자인 ref, 시안, 스크린샷, URL을 제공했다면:
+- ref의 레이아웃 구조를 **그대로** 재현 (추상화 금지)
+- ref의 색상값을 직접 추출해서 CSS 변수로 적용
+- ref에 없는 요소를 마음대로 추가하지 않기
+- "참고만" 하는 게 아니라 **소스 오브 트루스**로 취급
+
+ref가 없을 때만 자유롭게 디자인 결정을 내린다.
+
 ### 1. 서버 컴포넌트가 기본
 ```tsx
 // 서버 컴포넌트 (기본, 빠름)
@@ -89,6 +99,43 @@ function handle(data: any) { ... }
 interface FormData { name: string; email: string }
 function handle(data: FormData) { ... }
 ```
+
+### 5b. 네비게이션 패턴 명확히 구분
+
+**싱글페이지 스크롤 사이트**일 때:
+- nav 링크는 `href="#section-id"` (hash anchor)
+- 각 섹션에 `id="section-id"` 명시
+- 버튼 클릭 시 해당 섹션으로 스크롤
+- 별도 라우트(`/about`, `/services`) **생성하지 않음**
+
+```tsx
+// 싱글페이지 nav 예시
+<a href="#features">기능 소개</a>
+<section id="features">...</section>
+```
+
+**멀티페이지 사이트**일 때:
+- nav 링크는 `href="/about"` 등 실제 Next.js 라우트
+- 링크에 나열된 모든 페이지(`/about`, `/services`, `/contact`)는 반드시 구현 완료
+- 링크만 있고 페이지 없는 상태로 절대 완료 처리 금지
+
+혼용 금지: nav가 멀티페이지처럼 보이면서 실제론 스크롤 되는 구조는 만들지 않는다.
+
+### 5c. 모든 버튼과 링크는 반드시 동작한다
+
+- `<button>` 또는 `<Button>` 에는 항상 `onClick` 핸들러 또는 `type="submit"` 지정
+- `<a>` 또는 `<Link>` 에는 항상 실제 `href` 지정 (`href="#"` 금지)
+- CTA 버튼이 외부 링크이면 `target="_blank" rel="noopener noreferrer"`
+- 폼의 제출 버튼은 실제 submit 로직과 연결
+- 작동하지 않는 버튼이 하나라도 있으면 미완성으로 간주
+
+### 5d. 세부 페이지 완전 구현
+
+nav 또는 카드에서 링크된 페이지는 모두 구현한다:
+- `/blog/[slug]` 링크가 있으면 해당 dynamic route 구현
+- 포트폴리오 카드에 "자세히 보기" 있으면 detail 페이지 있어야 함
+- 서비스 카드에 링크 있으면 `/services/[id]` 또는 해당 페이지 구현
+- placeholder 콘텐츠("곧 오픈 예정")로 채워도 되지만 404는 안 됨
 
 ### 5. 파일 구조 준수
 ```
@@ -182,6 +229,10 @@ npm run dev
 - [ ] 모바일에서 깨지지 않는가?
 - [ ] Framer Motion으로 애니메이션?
 - [ ] 접근성: 시맨틱 HTML (`section`, `article`, `nav`, `h1~h6`)?
+- [ ] ref가 있었다면 레이아웃/색상을 그대로 반영했는가?
+- [ ] nav 패턴이 싱글페이지(anchor) vs 멀티페이지(route) 중 하나로 통일되었는가?
+- [ ] `href="#"` 또는 `onClick` 없는 버튼이 단 하나도 없는가?
+- [ ] nav에 링크된 모든 페이지/라우트가 구현되어 있는가?
 
 ## 하지 않는 것
 

@@ -1,25 +1,31 @@
 "use client"
 
-import { motion, type HTMLMotionProps } from "framer-motion"
-import { forwardRef } from "react"
+/**
+ * Button primitive — neutral styling on purpose.
+ *
+ * DESIGN NOTE: Designer replaces colors, radius, shadows, motion,
+ * and font weight based on the project's mood. This file keeps the
+ * three-variant API (primary / secondary / ghost) and three sizes.
+ */
 
-interface ButtonProps extends HTMLMotionProps<"button"> {
+import { forwardRef, type ButtonHTMLAttributes } from "react"
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost"
   size?: "sm" | "md" | "lg"
 }
 
 const variants = {
-  primary:
-    "bg-brand-500 text-white hover:bg-brand-600 shadow-lg shadow-brand-500/25",
+  primary: "bg-neutral-900 text-white hover:bg-neutral-800",
   secondary:
-    "bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm",
-  ghost: "text-white/70 hover:text-white hover:bg-white/10",
+    "border border-neutral-300 text-neutral-900 hover:border-neutral-900",
+  ghost: "text-neutral-700 hover:bg-neutral-100",
 }
 
 const sizes = {
-  sm: "px-4 py-2 text-sm rounded-xl",
-  md: "px-6 py-3 text-base rounded-2xl",
-  lg: "px-8 py-4 text-lg rounded-2xl",
+  sm: "px-4 py-2 text-sm rounded-md",
+  md: "px-6 py-3 text-base rounded-md",
+  lg: "px-8 py-4 text-lg rounded-md",
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -28,15 +34,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) {
     return (
-      <motion.button
+      <button
         ref={ref}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className={`font-semibold transition-colors duration-200 cursor-pointer ${variants[variant]} ${sizes[size]} ${className}`}
+        className={`inline-flex items-center justify-center font-semibold transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}
       >
         {children}
-      </motion.button>
+      </button>
     )
   },
 )

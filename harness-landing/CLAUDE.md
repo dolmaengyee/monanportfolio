@@ -12,19 +12,31 @@ A reusable Next.js landing page template designed for non-developers to customiz
 - Tailwind CSS v4 (CSS-first config in globals.css)
 - Framer Motion (scroll animations)
 - Lucide React (icons)
-- Pretendard font (Korean-optimized)
+- Fonts via `next/font/google` — **no fixed font**. The template
+  ships with Noto Sans KR as a placeholder; the designer picks the
+  actual font(s) based on the reverse-question answers and swaps
+  the import in `src/app/layout.tsx`.
 
-## How to Customize Content
+## This template ships EMPTY on purpose
 
-All site text lives in `src/lib/data.ts`. This is the ONLY file users need to edit for content changes:
+`src/app/page.tsx` is an empty placeholder. There are **no pre-built Hero /
+Features / Gallery / CTA / Navbar / Footer** components. Claude is expected to
+design and build the page from scratch, tailored to the actual project — not
+to fill in a pre-baked schema.
 
-- `siteConfig` - Site name, tagline, description
-- `navLinks` - Navigation menu items
-- `heroData` - Hero section title, subtitle, CTA button
-- `featuresData` - Feature cards (icon, title, description)
-- `galleryData` - Gallery items (image, title, description)
-- `ctaData` - Call-to-action text and button
-- `footerData` - Copyright and footer links
+What is preserved (shared foundation):
+- `src/app/layout.tsx` — Pretendard font, SEO metadata, Vercel Analytics & Speed Insights, favicon, OG image
+- `src/app/opengraph-image.tsx` — dynamic OG PNG
+- `src/app/icon.svg`, `robots.ts`, `sitemap.ts`
+- `src/components/ui/` — `Button`, `Card`, `AnimatedSection` (reusable primitives)
+- `src/lib/data.ts` — `siteConfig` only (used by layout + OG)
+
+## Planning flow (before writing code)
+
+1. Read the user's unstructured description (may be a single line or a long paste).
+2. Infer project type, audience, tone, tech needs, any reference sites.
+3. Ask **3–5 smart reverse questions** with option-style choices about feel / mood / layout direction (see `.harness/agents/planner.md`).
+4. Only after direction is locked, split work into designer → copywriter → builder → reviewer tasks.
 
 ## How to Change Brand Colors
 
@@ -36,20 +48,9 @@ Edit the `@theme` block in `src/app/globals.css`. Change the `--color-brand-*` v
 
 Or edit the `colors.brand` object in `tailwind.config.ts`.
 
-## How to Add Icons
+## Icons
 
-Icons use Lucide React. To use a new icon:
-
-1. Find the icon name at https://lucide.dev/icons
-2. Import it in the component (e.g., `import { Star } from "lucide-react"`)
-3. For features section, add the icon name string to `data.ts` and register it in the `iconMap` in `Features.tsx`
-
-## How to Add New Sections
-
-1. Create a new file in `src/components/sections/`
-2. Use `AnimatedSection` wrapper for scroll animations
-3. Import data from `src/lib/data.ts`
-4. Add the component to `src/app/page.tsx`
+Icons use Lucide React. Browse at https://lucide.dev/icons. Import directly in the component that needs them.
 
 ## Common Commands
 
@@ -64,24 +65,27 @@ npm run lint     # Run ESLint
 
 ```
 src/
-  app/           - Pages and global styles
+  app/           - Pages, global styles, SEO files (layout, OG, robots, sitemap)
   components/
-    layout/      - Navbar, Footer
-    sections/    - Hero, Features, Gallery, CTA
-    ui/          - Button, Card, AnimatedSection (reusable)
+    ui/          - Button, Card, AnimatedSection (reusable primitives only)
   lib/
-    data.ts      - ALL site content (edit this!)
+    data.ts      - siteConfig (site name + SEO) — everything else is per-project
     utils.ts     - Utility functions
 ```
 
+Claude creates `components/sections/`, `components/layout/`, or any other
+structure it decides the project needs. Data shapes (nav items, hero content,
+etc.) are defined alongside the components that use them, not pre-declared.
+
 ## Guidelines
 
-- Keep it simple. This template is for beginners.
-- All text content goes in `data.ts`, never hardcode strings in components.
+- Respect references: if the user provides one, extract actual colors / spacing / layout from it — do not fall back to template defaults.
+- Avoid template-looking defaults: `from-brand-50 to-white` blur-blob hero → 3-col icon grid → centered CTA is a tell-tale "AI did this" pattern. Pick a layout that matches the project's feel.
+- Navigation pattern must match the site: route-based for multi-page, hash anchors for single-page scroll. Do not mix without intent.
+- Every button / link must work (`onClick`, `type="submit"`, or a real `href`). No empty `href="#"`.
 - Use Tailwind utility classes for styling.
-- Wrap sections with `AnimatedSection` for scroll animations.
 - Images go in the `public/` folder.
-- The font is loaded via `next/font` in layout.tsx using the pretendard npm package.
+- Fonts: pick Google Fonts that match the project's mood (editorial? tech? playful?). Pair a display font with a body font when the design calls for it. Swap `next/font/google` imports in `layout.tsx` and expose CSS variables — do NOT leave Noto Sans KR as the default unless the project actually wants a neutral sans.
 - Never use emoji characters anywhere in the site UI (headings, buttons, labels, cards, etc.). Use Lucide React icons instead.
 
 ## Deployment

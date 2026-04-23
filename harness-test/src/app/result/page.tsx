@@ -69,8 +69,8 @@ export default function ResultPage() {
   if (!finalType || saving) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-3">
-        <div className="w-8 h-8 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
-        <p className="text-white/50 text-sm">결과를 분석하고 있어요...</p>
+        <div className="w-8 h-8 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin" />
+        <p className="text-neutral-500 text-sm">결과를 분석하고 있어요...</p>
       </div>
     )
   }

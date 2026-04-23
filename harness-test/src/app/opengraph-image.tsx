@@ -1,6 +1,14 @@
 import { ImageResponse } from 'next/og'
 import { testConfig } from '@/data/config'
 
+/**
+ * OG image generator.
+ *
+ * DESIGN NOTE: Ships with a neutral placeholder design. The designer
+ * replaces the background, typography weight, and accent color to
+ * match the project palette after planning.
+ */
+
 export const alt = testConfig.title
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
@@ -17,40 +25,21 @@ export default async function Image() {
           alignItems: 'center',
           justifyContent: 'center',
           padding: '80px',
-          background: 'radial-gradient(circle at 30% 20%, #3B1C6E 0%, #1A1033 50%, #0F0B1A 100%)',
-          color: 'white',
+          background: '#ffffff',
+          color: '#111111',
           textAlign: 'center',
         }}
       >
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 14,
-            marginBottom: 36,
-            fontSize: 26,
-            color: '#C4B5FD',
-            letterSpacing: '0.02em',
+            fontSize: 22,
+            color: '#666666',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            marginBottom: 28,
           }}
         >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              background: 'rgba(167, 139, 250, 0.18)',
-              border: '1px solid rgba(167, 139, 250, 0.4)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 26,
-              color: '#A78BFA',
-            }}
-          >
-            ✦
-          </div>
-          <span>{testConfig.shareHashtag.replace('#', '')}</span>
+          {testConfig.shareHashtag.replace('#', '')}
         </div>
         <div
           style={{
@@ -59,9 +48,7 @@ export default async function Image() {
             lineHeight: 1.05,
             letterSpacing: '-0.03em',
             maxWidth: 1000,
-            background: 'linear-gradient(to bottom, #FFFFFF, #C4B5FD)',
-            backgroundClip: 'text',
-            color: 'transparent',
+            color: '#111111',
           }}
         >
           {testConfig.title}
@@ -70,7 +57,7 @@ export default async function Image() {
           style={{
             fontSize: 32,
             marginTop: 32,
-            color: 'rgba(255,255,255,0.7)',
+            color: '#555555',
             maxWidth: 900,
             letterSpacing: '-0.01em',
           }}

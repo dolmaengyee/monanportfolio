@@ -11,42 +11,61 @@ Company introduction / portfolio website template with admin panel.
 - Framer Motion (scroll-triggered animations)
 - Supabase (contact form storage + admin authentication)
 - Lucide React (icons)
-- Pretendard font (variable weight, loaded via next/font)
+- Fonts via `next/font/google` — **no fixed font**. Ships with
+  Noto Sans KR as a placeholder; designer swaps during planning
+  based on the reverse-question answers.
+
+## This template ships EMPTY on purpose
+
+`src/app/page.tsx` is an empty placeholder. There are **no pre-built Hero /
+About / Services / Portfolio / Testimonials / Contact / Navbar / Footer**
+components, and **no `/about`, `/services`, `/contact` sub-pages**. Claude is
+expected to design and build the pages from scratch, tailored to the actual
+company — not to fill in a pre-baked schema.
+
+The admin panel IS preserved (it is not content, it is app functionality):
+- `src/app/admin/login` — Supabase auth
+- `src/app/admin` — contact submissions table
+- `src/components/admin/` — `AdminLayout`, `ContactTable`, `ProtectedRoute`
+- `src/hooks/useAuth.ts`
+
+## Planning flow (before writing code)
+
+1. Read the user's unstructured description (may be a single line or a long paste).
+2. Infer project type, audience, tone, pages needed, any reference sites.
+3. Ask **3–5 smart reverse questions** with option-style choices about feel / mood / page structure (see `.harness/agents/planner.md`).
+4. Only after direction is locked, split work into designer → copywriter → builder → reviewer tasks.
+5. Most company sites are multi-page (route-based nav). Single-page scroll is acceptable for event/landing-style requests.
 
 ## Project Structure
 
 ```
 src/
-├── app/               # Next.js App Router pages
-│   ├── layout.tsx     # Root layout (font, nav, footer)
-│   ├── page.tsx       # Home (assembles all sections)
-│   ├── about/         # About page
-│   ├── services/      # Services page
-│   ├── contact/       # Contact page
-│   └── admin/         # Admin dashboard (protected)
+├── app/               # Next.js App Router
+│   ├── layout.tsx     # Root layout (font, SEO, Analytics)
+│   ├── page.tsx       # Home — empty placeholder
+│   ├── admin/         # Admin dashboard (preserved — protected)
+│   ├── opengraph-image.tsx, icon.svg, robots.ts, sitemap.ts
+│   └── error.tsx, not-found.tsx, loading.tsx
 ├── components/
-│   ├── layout/        # Navbar, Footer
-│   ├── sections/      # Hero, About, Services, Portfolio, Testimonials, Contact
-│   ├── admin/         # AdminLayout, ContactTable, ProtectedRoute
-│   └── ui/            # Button, Card, AnimatedSection, PageHeader
+│   ├── admin/         # AdminLayout, ContactTable, ProtectedRoute (preserved)
+│   └── ui/            # Button, Card, AnimatedSection (reusable primitives)
 ├── hooks/             # useAuth (Supabase auth hook)
-└── lib/               # data.ts (all content), supabase.ts, utils.ts
+└── lib/               # data.ts (siteConfig only), supabase.ts, utils.ts
 ```
+
+Claude creates `components/sections/`, `components/layout/`, sub-page routes,
+and any other structure the project actually needs. Data shapes are defined
+alongside the components that use them.
 
 ## How to Customize
 
-### Content (text, links, services, testimonials)
+### Content
 
-Edit `src/lib/data.ts`. This single file contains ALL site content:
-- `siteConfig` — company name, tagline, SEO description
-- `navLinks` — navigation menu items
-- `heroData` — hero title, subtitle, CTA button
-- `aboutData` — about section text, stats, mission, vision
-- `servicesData` — service cards (icon, title, description, features)
-- `portfolioData` — project showcase (title, description, tags, image, link)
-- `testimonialsData` — client reviews
-- `contactData` — email, phone, address, social links
-- `footerLinks` — footer navigation
+The site ships with **no seeded content** beyond `siteConfig` in
+`src/lib/data.ts` (used by `layout.tsx` and the OG image generator). Claude
+writes page content from the user's brief and reverse-question answers, not
+from a pre-baked schema.
 
 ### Colors / Branding
 
@@ -56,13 +75,15 @@ Edit `tailwind.config.ts`:
 
 ### Font
 
-The template uses Pretendard. To change:
-1. Replace `public/fonts/PretendardVariable.woff2` with your font file
-2. Update the `localFont()` call in `src/app/layout.tsx`
+The template uses `next/font/google` — no font file is bundled. To change:
+1. Pick Google Fonts that match the project (filter: Korean at https://fonts.google.com)
+2. Update the `import { Noto_Sans_KR } from "next/font/google"` line in `src/app/layout.tsx`
+3. Pair a display font with a body font if the design needs editorial contrast
+4. Expose extra variables (e.g. `--font-display`) and apply via `font-[var(--font-display)]`
 
 ### Icons
 
-Icons use Lucide React. The `icon` field in `servicesData` is a Lucide icon name string (e.g., "Code", "Palette"). Browse icons at https://lucide.dev/icons
+Icons use Lucide React. Browse at https://lucide.dev/icons and import directly in the component that needs them.
 
 ## Supabase Setup
 
@@ -112,12 +133,10 @@ npm run lint         # Run ESLint
 
 | What to change | File to edit |
 |---|---|
-| All text content | `src/lib/data.ts` |
-| Colors / theme | `tailwind.config.ts` |
-| Font | `src/app/layout.tsx` + `public/fonts/` |
-| Page layout / sections | `src/app/page.tsx` (home) or individual page files |
-| Navigation links | `src/lib/data.ts` → `navLinks` |
-| Contact form fields | `src/components/sections/Contact.tsx` |
+| Site name / SEO description | `src/lib/data.ts` → `siteConfig` |
+| Colors / theme | `tailwind.config.ts` + `src/app/globals.css` `@theme` block |
+| Font | `src/app/layout.tsx` (swap `next/font/google` imports) |
+| Page content / sections | Components Claude creates under `src/components/` and `src/app/` routes |
 | Admin table columns | `src/components/admin/ContactTable.tsx` |
 | Animation behavior | `src/components/ui/AnimatedSection.tsx` |
 | SEO metadata | `src/app/layout.tsx` (global) or individual `page.tsx` files |
@@ -125,6 +144,11 @@ npm run lint         # Run ESLint
 
 ## Guidelines
 
+- Respect references: if the user provides one, extract actual colors / spacing / layout from it — do not fall back to template defaults.
+- Avoid template-looking defaults: dark `bg-neutral-900` hero with `brand-500/20` blur blobs → 3-col service grid → centered testimonials is the obvious "AI did this" pattern. Pick a layout that matches the project's feel.
+- Navigation pattern must match the site: route-based for multi-page company sites, hash anchors for single-page scroll. Do not mix without intent.
+- Every button / link must work (`onClick`, `type="submit"`, or a real `href`). No empty `href="#"`.
+- If you add a sub-page linked from the navbar, actually create the route under `src/app/`. No dangling links.
 - Never use emoji characters anywhere in the site UI (headings, buttons, labels, cards, etc.). Use Lucide React icons instead.
 
 ## Deployment

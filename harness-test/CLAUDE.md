@@ -8,8 +8,32 @@ The underlying type system (e.g. Enneagram, MBTI-like codes) is NEVER shown to t
 - Next.js 15 (App Router) + React 19 + TypeScript strict
 - Tailwind CSS v4 (CSS-first config via `@theme`)
 - Framer Motion for animations
-- Pretendard font (Korean optimized)
+- Fonts via `next/font/google` — **no fixed font**. Ships with Noto Sans KR
+  as a placeholder; designer swaps based on Discovery answers.
 - Optional Supabase for result analytics
+
+## Content is fixed, design is replaceable
+
+The **logic** of the test is user-driven — you fill in questions, results,
+and scoring rules through the data files. That part is stable.
+
+The **visual design** is not baked in. The bundled components use neutral
+placeholder styling (grays, simple borders, no gradient-heavy theme) so the
+designer can replace the entire look to match the project's mood. Every
+interactive component has a `DESIGN NOTE:` comment at the top explaining
+which parts must stay (data contract, flow) and which parts the designer
+should rewrite (colors, radius, motion, typography, layout).
+
+## Planning flow (before writing code)
+
+1. Read the user's unstructured description.
+2. Infer test type, audience, tone, number of result types, share story.
+3. Ask **3–5 smart reverse questions** with option-style choices about:
+   - Visual mood (playful quiz / serious analytical / editorial magazine)
+   - Number of result types and whether they should feel distinct per-type
+   - Font pairing (see `.harness/agents/planner.md`)
+4. Only after direction is locked, build out `src/data/` (content) and then
+   rewrite the component styling (design).
 
 ## Architecture
 

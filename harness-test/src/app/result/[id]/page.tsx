@@ -33,8 +33,8 @@ export default async function SharedResultPage({ params }: Props) {
   return (
     <div className="flex-1 flex flex-col">
       <div className="pt-10 pb-4 text-center">
-        <p className="text-white/50 text-sm">
-          <span className="font-semibold text-white/80">{row.name}</span>님의 성향 결과
+        <p className="text-neutral-500 text-sm">
+          <span className="font-semibold text-neutral-900">{row.name}</span>님의 성향 결과
         </p>
       </div>
 

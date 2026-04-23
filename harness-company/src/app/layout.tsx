@@ -1,20 +1,36 @@
 import type { Metadata } from 'next'
-import localFont from 'next/font/local'
+import { Noto_Sans_KR } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { siteConfig } from '@/lib/data'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import './globals.css'
 
-/* ── Pretendard font ─────────────────────────────────
- *  Download Pretendard-Variable.woff2 into public/fonts/
- *  https://github.com/orioncactus/pretendard
- * ──────────────────────────────────────────────────── */
-const pretendard = localFont({
-  src: '../../public/fonts/PretendardVariable.woff2',
-  variable: '--font-pretendard',
+/* ── Font ────────────────────────────────────────────────────────
+ *  PLACEHOLDER — Noto Sans KR is a safe Korean + Latin default.
+ *
+ *  This template does NOT ship a fixed font. During the Discovery
+ *  phase (see .harness/agents/planner.md), the planner asks the
+ *  user about mood / reference / tone and the designer picks
+ *  1–2 Google Fonts that actually match the project.
+ *
+ *  How to swap:
+ *  1. Pick fonts from https://fonts.google.com (filter: Korean if needed)
+ *  2. Change the import below — e.g. add a display font for headings.
+ *  3. Apply via `font-sans` (body) and `font-[var(--font-display)]`
+ *     (headings) after exposing the variable on <html>.
+ *
+ *  Common Korean-friendly Google Fonts:
+ *  - Noto Sans KR (neutral, all-purpose)
+ *  - Nanum Myeongjo (editorial serif)
+ *  - IBM Plex Sans KR (tech, geometric)
+ *  - Gowun Dodum (soft, rounded)
+ *  - Black Han Sans (display, headline-only)
+ * ───────────────────────────────────────────────────────────── */
+const fontSans = Noto_Sans_KR({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '900'],
+  variable: '--font-sans',
   display: 'swap',
-  weight: '100 900',
-  fallback: ['system-ui', 'sans-serif'],
 })
 
 /* ── SEO Metadata ─────────────────────────────────────
@@ -74,11 +90,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko" className={pretendard.variable}>
+    <html lang="ko" className={fontSans.variable}>
       <body className="font-sans">
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

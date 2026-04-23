@@ -1,59 +1,43 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Pretendard";
-  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
-  font-display: swap;
-}
-
+/* ── Theme tokens ────────────────────────────────────
+ *  Placeholders — designer replaces these during planning.
+ *  Do NOT treat the defaults as the project's identity.
+ * ──────────────────────────────────────────────────── */
 @theme {
-  --color-brand-50: #fdf4ff;
-  --color-brand-100: #fae8ff;
-  --color-brand-200: #f5d0fe;
-  --color-brand-300: #f0abfc;
-  --color-brand-400: #e879f9;
-  --color-brand-500: #a855f7;
-  --color-brand-600: #9333ea;
-  --color-brand-700: #7e22ce;
-  --color-brand-800: #6b21a8;
-  --color-brand-900: #581c87;
+  /* Brand scale — designer picks the actual hue per project. */
+  --color-brand-50: #f8fafc;
+  --color-brand-100: #f1f5f9;
+  --color-brand-200: #e2e8f0;
+  --color-brand-300: #cbd5e1;
+  --color-brand-400: #94a3b8;
+  --color-brand-500: #64748b;
+  --color-brand-600: #475569;
+  --color-brand-700: #334155;
+  --color-brand-800: #1e293b;
+  --color-brand-900: #0f172a;
 
-  --color-typeA: #f97316;
-  --color-typeB: #3b82f6;
-  --color-typeC: #ec4899;
-  --color-typeD: #10b981;
+  /* Type accent scale — optional, used when the test renders N result
+   * types in distinct colors. Add/remove slots to match the test. */
+  --color-typeA: var(--color-brand-500);
+  --color-typeB: var(--color-brand-600);
+  --color-typeC: var(--color-brand-700);
+  --color-typeD: var(--color-brand-800);
 
-  --font-pretendard: "Pretendard", system-ui, -apple-system, sans-serif;
+  /* --font-sans is injected by next/font/google in layout.tsx. */
+  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
-html {
-  font-family: var(--font-pretendard);
-}
-
-body {
-  background: linear-gradient(135deg, #0f0b1a 0%, #1a1028 50%, #0f0b1a 100%);
-  min-height: 100vh;
-  color: white;
-  overflow-x: hidden;
-}
-
-/* Hide scrollbar for a cleaner mobile experience */
-::-webkit-scrollbar {
-  display: none;
-}
-
-html {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-/* Smooth scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Selection color */
+body {
+  min-height: 100vh;
+}
+
+/* Selection color — designer overrides per palette. */
 ::selection {
-  background: rgba(168, 85, 247, 0.3);
-  color: white;
+  background: var(--color-brand-200);
+  color: var(--color-brand-900);
 }

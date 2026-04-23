@@ -1,9 +1,13 @@
 @import 'tailwindcss';
 
-/* ── Pretendard Font ─────────────────────────────────
- *  Loaded via next/font in layout.tsx as a CSS variable.
- *  Fallback: system-ui → sans-serif
+/* ── Font ───────────────────────────────────────────
+ *  `--font-sans` is injected by `next/font/google` in
+ *  layout.tsx. No fixed font is baked into this template
+ *  — designer picks fonts based on project mood.
  * ──────────────────────────────────────────────────── */
+@theme {
+  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+}
 
 /* ── Custom utility layer ────────────────────────────
  *  Add project-wide overrides here.
