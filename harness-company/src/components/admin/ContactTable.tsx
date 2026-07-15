@@ -1,41 +1,31 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { fetchContacts as fetchContactsApi, type ContactRecord } from '@/lib/api'
 import { formatDate } from '@/lib/utils'
 import { RefreshCw, Inbox } from 'lucide-react'
 
 /* ── ContactTable ────────────────────────────────────
- *  Fetches and displays contact form submissions
- *  from the Supabase "contacts" table.
+ *  Fetches and displays contact form submissions from the
+ *  Neon "contacts" table via GET /api/admin/contacts.
  * ──────────────────────────────────────────────────── */
 
-interface ContactRow {
-  id: string
-  name: string
-  email: string
-  phone: string | null
-  message: string
-  created_at: string
-}
-
 export function ContactTable() {
-  const [contacts, setContacts] = useState<ContactRow[]>([])
+  const [contacts, setContacts] = useState<ContactRecord[]>([])
   const [loading, setLoading] = useState(true)
 
-  const fetchContacts = async () => {
+  const loadContacts = async () => {
     setLoading(true)
-    const { data } = await supabase
-      .from('contacts')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    setContacts((data as ContactRow[]) ?? [])
+    try {
+      setContacts(await fetchContactsApi())
+    } catch {
+      setContacts([])
+    }
     setLoading(false)
   }
 
   useEffect(() => {
-    fetchContacts()
+    loadContacts()
   }, [])
 
   return (
@@ -46,7 +36,7 @@ export function ContactTable() {
           Contact Submissions
         </h3>
         <button
-          onClick={fetchContacts}
+          onClick={loadContacts}
           disabled={loading}
           className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-neutral-100"
         >
@@ -84,12 +74,14 @@ export function ContactTable() {
                   <td className="whitespace-nowrap px-6 py-4 font-medium text-neutral-900">
                     {c.name}
                   </td>
-                  <td className="px-6 py-4 text-neutral-600">{c.email}</td>
+                  <td className="px-6 py-4 text-neutral-600">
+                    {c.email ?? '-'}
+                  </td>
                   <td className="px-6 py-4 text-neutral-600">
                     {c.phone ?? '-'}
                   </td>
                   <td className="max-w-xs truncate px-6 py-4 text-neutral-600">
-                    {c.message}
+                    {c.message ?? '-'}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-neutral-500">
                     {formatDate(c.created_at)}

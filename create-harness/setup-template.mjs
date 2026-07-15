@@ -90,6 +90,25 @@ function updateEnvLocal(projectDir, key, value) {
   writeFileSync(envPath, content)
 }
 
+// Read a single key from .env.local (quotes stripped). Returns null if absent.
+function readEnvLocal(projectDir, key) {
+  const envPath = join(projectDir, '.env.local')
+  if (!existsSync(envPath)) return null
+  const content = readFileSync(envPath, 'utf8')
+  const m = content.match(new RegExp(`^${key}=(.*)$`, 'm'))
+  if (!m) return null
+  return m[1].trim().replace(/^["']|["']$/g, '')
+}
+
+// Push an env var to every Vercel environment. Returns true only if all succeed.
+async function addVercelEnvAll(key, value, envs = ['production', 'preview', 'development']) {
+  let ok = true
+  for (const env of envs) {
+    if (!(await addVercelEnv(key, value, env))) ok = false
+  }
+  return ok
+}
+
 // ─── Project info ─────────────────────────────────────────────────────────────
 function getProjectInfo(projectDir) {
   const pkg = JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf8'))
@@ -141,8 +160,8 @@ async function showMenu(info) {
       key: String(n++), id: 'database',
       label: '데이터 저장소 설정',
       desc: info.type === 'test'
-        ? 'Supabase 무료 DB — 테스트 결과 저장'
-        : 'Supabase 무료 DB — 문의 내용 저장',
+        ? 'Neon 무료 DB (Vercel 연동) — 테스트 결과 저장'
+        : 'Neon 무료 DB (Vercel 연동) — 문의 내용 저장',
     })
   }
 
@@ -286,129 +305,183 @@ async function deployFlow(projectDir, info) {
   }
 }
 
-// ─── Database flow ────────────────────────────────────────────────────────────
+// ─── Neon database flow ───────────────────────────────────────────────────────
+
+// CREATE TABLE statement for the current template. Landing has no DB → null.
+function tableSql(type) {
+  if (type === 'test') {
+    return `CREATE TABLE IF NOT EXISTS test_results (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  phone text,
+  final_type text NOT NULL,
+  scores jsonb,
+  ranking jsonb,
+  answers jsonb,
+  consented_at timestamptz,
+  created_at timestamptz DEFAULT now()
+);`
+  }
+  if (type === 'company') {
+    return `CREATE TABLE IF NOT EXISTS contacts (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  email text,
+  phone text,
+  message text,
+  created_at timestamptz DEFAULT now()
+);`
+  }
+  return null
+}
+
+function printTableSql(type) {
+  const sql = tableSql(type)
+  if (!sql) return
+  console.log(c.gray('  ' + '─'.repeat(64)))
+  sql.split('\n').forEach((l) => console.log(c.cyan('  ' + l)))
+  console.log(c.gray('  ' + '─'.repeat(64)) + '\n')
+}
+
+function printNeonDashboardGuide() {
+  console.log('    Vercel 대시보드 → 프로젝트 → ' + c.cyan('Storage') + ' 탭')
+  console.log('    → ' + c.cyan('Create Database') + ' → ' + c.cyan('Neon(무료)') + ' → ' + c.cyan('Connect'))
+  console.log(c.dim('    연동하면 DATABASE_URL이 배포 환경변수에 자동 주입돼요.'))
+}
+
+// Create the template table over the Neon HTTP driver, imported from the
+// generated project's own node_modules. Returns false on any failure.
+async function createTable(dbUrl, sqlText) {
+  let neon
+  try {
+    ({ neon } = await import('@neondatabase/serverless'))
+  } catch {
+    console.log(c.dim('  (@neondatabase/serverless 패키지를 찾지 못했어요. npm install 후 다시 시도)'))
+    return false
+  }
+  try {
+    const sql = neon(dbUrl)
+    await sql.query(sqlText)
+    return true
+  } catch (e) {
+    console.log(c.dim('  ' + (e?.message || String(e))))
+    return false
+  }
+}
+
 async function databaseFlow(projectDir, info) {
-  console.log(c.cyanBold('\n  ━━━ 데이터 저장소 설정 ━━━\n'))
-  console.log('  Supabase는 무료 데이터베이스 서비스예요.')
+  console.log(c.cyanBold('\n  ━━━ 데이터 저장소 설정 (Neon) ━━━\n'))
+  console.log('  Neon은 Vercel 마켓플레이스에서 무료로 붙일 수 있는')
+  console.log('  서버리스 PostgreSQL 데이터베이스예요.')
   console.log(
     info.type === 'test'
       ? '  테스트 결과가 저장되고, 관리자 페이지에서 볼 수 있어요.\n'
       : '  문의 내용이 저장되고, 관리자 페이지에서 볼 수 있어요.\n'
   )
+  console.log(c.bold('  가장 큰 장점:'))
+  console.log('    연동하면 ' + c.cyan('DATABASE_URL') + '이 배포 환경변수에 자동 주입돼요.')
+  console.log(c.dim('    (API 키를 직접 복사/붙여넣기 할 필요가 없어요)\n'))
   console.log(c.bold('  작동 방식:'))
-  console.log('    1. supabase.com 에서 프로젝트를 만들어요 (GitHub 계정으로 로그인)')
-  console.log('    2. DB 테이블을 만들어요 (SQL 한 번만 실행)')
-  console.log('    3. API 키 2개를 복사해서 여기에 붙여넣어요')
-  console.log('    4. 자동으로 .env.local에 저장됩니다\n')
-  console.log(c.bold('  예상 시간: 5~10분\n'))
+  console.log('    1. Vercel에 Neon 데이터베이스를 붙여요 (무료)')
+  console.log('    2. DATABASE_URL을 내 컴퓨터로 가져와요')
+  console.log('    3. 테이블을 자동으로 만들어요')
+  console.log('    4. 재배포하면 바로 저장이 동작해요\n')
+  console.log(c.bold('  예상 시간: 3~5분\n'))
 
   if (!(await askConfirm('계속할까요?'))) return
 
-  console.log(c.gray('\n  supabase.com 을 브라우저에서 엽니다...'))
-  openBrowser('https://supabase.com/dashboard')
-
-  console.log(c.bold('\n  1단계 — 프로젝트 만들기\n'))
-  console.log('  · 브라우저에서 "New project" 클릭')
-  console.log('  · 프로젝트 이름 입력')
-  console.log('  · Region: ' + c.cyan('Northeast Asia (Seoul)') + ' 선택')
-  console.log('  · 데이터베이스 비밀번호 생성 (Supabase가 제안하는 걸 쓰세요)')
-  console.log(c.dim('  · 프로젝트 준비까지 약 1~2분 기다리세요\n'))
-
-  if (!(await askConfirm('프로젝트 생성 완료했어요'))) return
-
-  console.log(c.bold('\n  2단계 — 테이블 만들기\n'))
-  console.log('  · 왼쪽 메뉴에서 ' + c.cyan('SQL Editor') + ' 클릭')
-  console.log('  · ' + c.cyan('New query') + ' 버튼 클릭')
-  console.log('  · 아래 SQL을 전체 복사 → 붙여넣기 → 오른쪽 위 ' + c.cyan('Run') + ' 버튼 클릭\n')
-  console.log(c.gray('  ' + '─'.repeat(64)))
-
-  let sql
-  if (info.type === 'test') {
-    sql = `CREATE TABLE test_results (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  phone TEXT,
-  final_type INTEGER NOT NULL CHECK (final_type BETWEEN 1 AND 9),
-  scores JSONB NOT NULL,
-  ranking JSONB NOT NULL,
-  answers JSONB NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-ALTER TABLE test_results ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "public_insert" ON test_results FOR INSERT WITH CHECK (true);
-CREATE POLICY "public_select" ON test_results FOR SELECT USING (true);`
-  } else if (info.type === 'company') {
-    sql = `CREATE TABLE contacts (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT,
-  message TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "public_insert" ON contacts FOR INSERT WITH CHECK (true);
-CREATE POLICY "auth_select" ON contacts FOR SELECT USING (auth.role() = 'authenticated');`
-  }
-
-  sql.split('\n').forEach((l) => console.log(c.cyan('  ' + l)))
-  console.log(c.gray('  ' + '─'.repeat(64)))
-  console.log(c.dim('\n  "Success. No rows returned" 메시지가 나오면 성공이에요.\n'))
-
-  if (!(await askConfirm('SQL 실행 완료했어요'))) return
-
-  console.log(c.bold('\n  3단계 — API 키 가져오기\n'))
-  console.log('  · 왼쪽 메뉴 아래쪽 톱니바퀴 아이콘 클릭')
-  console.log('  · ' + c.cyan('Project Settings') + ' → ' + c.cyan('API') + ' 클릭')
-  console.log('  · 아래 두 값을 복사해서 여기에 붙여넣으세요:\n')
-  console.log('    - ' + c.cyan('Project URL') + c.gray(' (https://...supabase.co 형식)'))
-  console.log('    - ' + c.cyan('anon public') + c.gray(' (eyJ로 시작하는 긴 문자열)\n'))
-
-  const url = await askText('Project URL', '(https://...supabase.co)')
-  if (!url.startsWith('https://')) {
-    console.log(c.yellow('\n  URL은 https://로 시작해야 합니다. 취소합니다.\n'))
+  // ── Precondition: Vercel CLI + login + linked project ──────────────────────
+  if (!cmdExists('vercel')) {
+    console.log(c.yellow('\n  Vercel CLI가 필요해요.'))
+    console.log('  터미널에서: ' + c.cyan('npm i -g vercel'))
+    console.log(c.gray('  설치 후 "vercel login" 실행, 그 다음 이 메뉴를 다시 열어주세요.\n'))
     return
   }
-
-  const key = await askPassword('anon public 키')
-  if (key.length < 20) {
-    console.log(c.yellow('\n  anon 키가 너무 짧습니다. 취소합니다.\n'))
+  try {
+    runSilent('vercel whoami')
+  } catch {
+    console.log(c.yellow('\n  Vercel 로그인이 필요해요.'))
+    console.log('  터미널에서 실행: ' + c.cyan('vercel login') + '\n')
     return
   }
-
-  // Save locally
-  updateEnvLocal(projectDir, 'NEXT_PUBLIC_SUPABASE_URL', url)
-  updateEnvLocal(projectDir, 'NEXT_PUBLIC_SUPABASE_ANON_KEY', key)
-  console.log(c.green('\n  ✓ .env.local에 저장 완료'))
-
-  // Sync to Vercel
-  if (info.vercelLinked) {
-    console.log('')
-    if (await askConfirm('Vercel에도 환경변수를 설정할까요? (배포된 사이트에 필요)')) {
-      console.log(c.gray('  Vercel에 설정 중...'))
-      const ok1 = await addVercelEnv('NEXT_PUBLIC_SUPABASE_URL', url)
-      console.log(ok1 ? c.green('  ✓ URL 설정 완료') : c.yellow('  URL 설정 실패'))
-      const ok2 = await addVercelEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY', key)
-      console.log(ok2 ? c.green('  ✓ 키 설정 완료') : c.yellow('  키 설정 실패'))
-
-      if (ok1 && ok2 && (await askConfirm('\n  지금 재배포할까요?'))) {
-        console.log(c.gray('  배포 중...'))
-        try {
-          const output = runSilent('vercel --prod --yes', { cwd: projectDir })
-          const m = output.match(/https:\/\/[^\s]+\.vercel\.app/)
-          if (m) console.log(c.green(`  ✓ 재배포 완료: ${m[0]}`))
-          else console.log(c.green('  ✓ 재배포 완료'))
-        } catch {
-          console.log(c.yellow('  재배포 실패'))
-        }
-      }
+  if (!info.vercelLinked) {
+    console.log(c.bold('\n  먼저 Vercel 프로젝트에 연결할게요.'))
+    console.log(c.gray('  (질문이 몇 개 나와요. 대부분 그냥 Enter 눌러도 됩니다)\n'))
+    try {
+      const child = spawn('vercel', ['link', '--yes'], { cwd: projectDir, stdio: 'inherit', shell: true })
+      await new Promise((r) => child.on('close', r))
+      info.vercelLinked = existsSync(join(projectDir, '.vercel', 'project.json'))
+    } catch {}
+    if (!info.vercelLinked) {
+      console.log(c.yellow('\n  Vercel 연결이 안 됐어요. 먼저 메뉴에서 "인터넷에 올리기"를 진행해주세요.\n'))
+      return
     }
-  } else {
-    console.log(c.dim('\n  (Vercel 연결 전이라 로컬에만 저장됨. 나중에 배포하면 자동 동기화)'))
+    console.log(c.green('  ✓ Vercel 연결 완료'))
   }
 
-  console.log(c.green('\n  데이터베이스 설정 완료!'))
-  console.log(c.gray('  npm run dev 실행 후 테스트해보세요.\n'))
+  // ── Step 1: attach Neon from the Vercel Marketplace ────────────────────────
+  console.log(c.bold('\n  1단계 — Neon 데이터베이스 붙이기\n'))
+  console.log('  아래 명령이 Vercel 마켓플레이스에서 Neon을 붙여줍니다.')
+  console.log(c.dim('  (플랜/이름을 물어보면 무료(Free)와 기본값으로 진행하세요)\n'))
+
+  let integrationOk = false
+  try {
+    run('vercel integration add neon', { cwd: projectDir })
+    integrationOk = true
+  } catch {
+    integrationOk = false
+  }
+
+  // Always show the dashboard fallback for reference.
+  console.log(c.bold('\n  대시보드에서 직접 붙이는 방법 (안 될 때):\n'))
+  printNeonDashboardGuide()
+
+  if (!integrationOk) {
+    if (!(await askConfirm('\n  대시보드에서 Neon 연결을 완료했어요'))) return
+  }
+
+  // ── Step 2: pull DATABASE_URL into .env.local ──────────────────────────────
+  console.log(c.bold('\n  2단계 — DATABASE_URL 가져오기\n'))
+  console.log(c.gray('  vercel env pull .env.local 실행 중...'))
+  try {
+    runSilent('vercel env pull .env.local --yes', { cwd: projectDir })
+  } catch {
+    try {
+      runSilent('vercel env pull .env.local', { cwd: projectDir })
+    } catch {}
+  }
+
+  const dbUrl = readEnvLocal(projectDir, 'DATABASE_URL')
+  if (!dbUrl) {
+    console.log(c.yellow('\n  DATABASE_URL을 아직 찾지 못했어요.'))
+    console.log(c.gray('  Neon 연결이 끝난 뒤 이 메뉴를 다시 실행하거나,'))
+    console.log(c.gray('  터미널에서 ' + c.cyan('vercel env pull .env.local') + ' 을 직접 실행해보세요.\n'))
+    console.log(c.bold('  테이블은 아래 SQL로 직접 만들 수 있어요'))
+    console.log(c.gray('  (Vercel → Storage → Neon → Open in Neon → SQL Editor):\n'))
+    printTableSql(info.type)
+    return
+  }
+  console.log(c.green('  ✓ DATABASE_URL 가져오기 완료'))
+
+  // ── Step 3: auto-create the table ──────────────────────────────────────────
+  const sqlText = tableSql(info.type)
+  if (!sqlText) {
+    console.log(c.gray('\n  이 템플릿은 데이터베이스가 필요 없어요.\n'))
+    return
+  }
+
+  console.log(c.bold('\n  3단계 — 테이블 만들기\n'))
+  console.log(c.gray('  Neon에 테이블 생성 중...'))
+  const created = await createTable(dbUrl, sqlText)
+  if (created) {
+    console.log(c.green('  ✓ 테이블 생성 완료'))
+    console.log(c.green('\n  데이터베이스 설정 완료!'))
+    console.log(c.gray('  재배포하면 저장 기능이 동작해요. (메뉴 → 인터넷 재배포)\n'))
+  } else {
+    console.log(c.yellow('\n  자동 생성에 실패했어요. Neon 콘솔에서 직접 실행해주세요:'))
+    console.log(c.gray('  Vercel → Storage → Neon → Open in Neon → SQL Editor\n'))
+    printTableSql(info.type)
+  }
 }
 
 // ─── Admin password flow ──────────────────────────────────────────────────────
@@ -431,13 +504,13 @@ async function adminPasswordFlow(projectDir, info) {
     return
   }
 
-  updateEnvLocal(projectDir, 'NEXT_PUBLIC_ADMIN_PASSWORD', pw)
+  updateEnvLocal(projectDir, 'ADMIN_PASSWORD', pw)
   console.log(c.green('\n  ✓ .env.local에 저장 완료'))
 
   if (info.vercelLinked) {
     if (await askConfirm('Vercel에도 설정할까요?')) {
-      const ok = await addVercelEnv('NEXT_PUBLIC_ADMIN_PASSWORD', pw)
-      console.log(ok ? c.green('  ✓ Vercel 설정 완료') : c.yellow('  Vercel 설정 실패'))
+      const ok = await addVercelEnvAll('ADMIN_PASSWORD', pw)
+      console.log(ok ? c.green('  ✓ Vercel 설정 완료') : c.yellow('  Vercel 설정 실패 (이미 있는 값일 수 있어요)'))
 
       if (ok && (await askConfirm('지금 재배포할까요?'))) {
         try {

@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
-      <p className="text-7xl font-bold text-brand-500">404</p>
+      <p className="text-7xl font-bold text-neutral-900">404</p>
       <h1 className="mt-4 text-2xl font-semibold text-neutral-900">
         페이지를 찾을 수 없습니다
       </h1>
@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="mt-8 rounded-lg bg-brand-500 px-6 py-3 font-medium text-white transition-colors hover:bg-brand-600"
+        className="mt-8 rounded-lg bg-neutral-900 px-6 py-3 font-medium text-white transition-colors hover:bg-neutral-800"
       >
         홈으로 돌아가기
       </Link>

@@ -18,7 +18,7 @@
  *    - '@/components/ui/AnimatedSection'
  *
  *  Admin panel (preserved, do not remove):
- *    - '/admin/login' — Supabase auth
+ *    - '/admin/login' — password auth (server ADMIN_PASSWORD)
  *    - '/admin'       — contact form submissions
  *
  *  Edit site name / SEO in '@/lib/data' (siteConfig).

@@ -61,12 +61,12 @@ node -v  # v22.x.x 나오면 성공
 | 순서 | 서비스 | 가입 방법 | 용도 |
 |---|---|---|---|
 | 1 | [GitHub](https://github.com) | Google 계정으로 가입 | 코드 저장소 |
-| 2 | [Vercel](https://vercel.com) | GitHub으로 로그인 | 배포 |
-| 3 | [Supabase](https://supabase.com) | GitHub으로 로그인 | DB/로그인 |
-| 4 | [Cloudflare](https://cloudflare.com) | 이메일로 가입 | DNS/도메인 관리 |
-| 5 | [가비아](https://gabia.com) | 이메일로 가입 | 도메인 구매 |
+| 2 | [Vercel](https://vercel.com) | GitHub으로 로그인 | 배포 + DB(Neon) |
+| 3 | [Cloudflare](https://cloudflare.com) | 이메일로 가입 | DNS/도메인 관리 |
+| 4 | [가비아](https://gabia.com) | 이메일로 가입 | 도메인 구매 |
 
-> GitHub 계정 하나만 만들면 Vercel과 Supabase는 그 계정으로 바로 로그인할 수 있어요.
+> GitHub 계정 하나만 만들면 Vercel은 그 계정으로 바로 로그인할 수 있어요.
+> DB(Neon)는 Vercel 안에서 바로 만들 수 있어서 **별도 가입이 필요 없어요.**
 
 ### AI 도구 설치 (구독 서비스에 맞게 1개 선택)
 
@@ -125,7 +125,7 @@ node index.js
 
 **작업 방식**: 템플릿은 의도적으로 비어있는 상태로 배포됩니다. AI에게 만들고 싶은 사이트를 자유 형식으로 설명하면, **역질문(무드·레퍼런스·페이지 구성·폰트 방향)** 으로 방향을 확정한 뒤 디자인과 코드를 처음부터 작성해요. 미리 깔린 Hero/Features 같은 섹션을 채워 넣는 방식이 아닙니다.
 
-**색상 변경**: `tailwind.config.ts` (company/test) 또는 `globals.css` (landing)의 `@theme` 블록
+**색상 변경**: `src/app/globals.css`의 `@theme` 블록 (모든 템플릿 공통, Tailwind v4 CSS-first)
 **폰트 변경**: `src/app/layout.tsx`에서 `next/font/google` import만 교체 (예: `Noto_Sans_KR` → `Nanum_Myeongjo` + `Black_Han_Sans` 조합)
 **사이트 이름/SEO**: `src/lib/data.ts`의 `siteConfig`
 
@@ -144,24 +144,16 @@ node index.js
 
 ## 7단계: DB 설정 (company / test 하네스)
 
-### Supabase vs Firebase 비교
+**이 하네스는 Neon(서버리스 PostgreSQL) 기반**이에요. Vercel 마켓플레이스에서 무료로 바로 만들 수 있고, 연동하면 `DATABASE_URL` 환경변수가 **배포 환경에 자동으로 주입**돼서 복사/붙여넣기가 필요 없어요.
 
-| 항목 | Supabase | Firebase |
-|---|---|---|
-| DB 종류 | PostgreSQL (SQL) | Firestore (NoSQL) |
-| 무료 한도 | DB 500MB, 대역폭 2GB | 1GB 저장, 읽기 50K/일 |
-| 인증 | 이메일, OAuth 내장 | 이메일, OAuth 내장 |
-| 가입 방법 | GitHub으로 로그인 | Google 계정으로 로그인 |
-| 어울리는 프로젝트 | 구조화 데이터, 관리자 패널 | 실시간 채팅, 모바일 앱 |
+### Neon 연결 방법 (권장: `npm run setup` 메뉴에서 자동 진행)
 
-**이 하네스는 Supabase 기반**이에요. 대부분의 웹사이트에 Supabase가 더 적합합니다.
+1. Vercel 대시보드 → 프로젝트 → **Storage** 탭 → **Create Database** → **Neon** (무료 플랜) → Connect
+2. 연동하면 `DATABASE_URL`이 Vercel 환경변수에 자동 주입됨
+3. 로컬 개발용으로 받아오기: `vercel env pull .env.local`
+4. 테이블 생성: `npm run setup`의 DB 메뉴가 자동으로 만들어줘요 (또는 각 템플릿 CLAUDE.md의 SQL을 Neon 콘솔 SQL Editor에서 실행)
 
-### Supabase 연결 방법
-
-1. https://supabase.com 에서 New Project 생성 (GitHub으로 로그인)
-2. Project Settings → API → Project URL 복사 → `.env.local`의 `NEXT_PUBLIC_SUPABASE_URL`에 입력
-3. Project Settings → API → anon public 키 복사 → `.env.local`의 `NEXT_PUBLIC_SUPABASE_ANON_KEY`에 입력
-4. SQL Editor에서 contacts 테이블 생성 (harness-company CLAUDE.md 참고)
+> DB는 **선택 사항**이에요. 연결하지 않아도 사이트는 정상 동작하고, 저장 기능(문의 접수, 테스트 결과 저장)만 꺼져 있어요.
 
 ---
 
@@ -233,6 +225,7 @@ Cloudflare → 해당 도메인 → DNS → Records → Add record:
 - **언어**: TypeScript (strict)
 - **스타일**: Tailwind CSS v4 + Framer Motion
 - **폰트**: `next/font/google` — 고정된 폰트 없음. Noto Sans KR이 플레이스홀더로 깔려 있고, 프로젝트 무드에 맞춰 디자이너가 교체
-- **DB/Auth**: Supabase (company/test 하네스)
+- **DB**: Neon 서버리스 PostgreSQL — Vercel 마켓플레이스 연동, `DATABASE_URL` 자동 주입 (company/test 하네스, 선택 사항)
+- **관리자 인증**: 서버 전용 `ADMIN_PASSWORD` 환경변수 + httpOnly 쿠키 (company/test 하네스)
 - **배포**: Vercel
 - **DNS**: Cloudflare

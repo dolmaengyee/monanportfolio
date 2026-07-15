@@ -4,11 +4,12 @@ You are working on harness-company, a Next.js 15 company introduction / portfoli
 - Next.js 15 (App Router)
 - React 19
 - TypeScript (strict)
-- Tailwind CSS v4
+- Tailwind CSS v4 (CSS-first `@theme`, no `tailwind.config.ts`)
 - Framer Motion
-- Supabase (contact form + admin auth)
+- Neon (serverless Postgres) — contact form storage, server-side only, optional
+- Password-based admin auth (server `ADMIN_PASSWORD` + httpOnly cookie)
 - Lucide React (icons)
-- Pretendard font
+- Noto Sans KR (placeholder font, swappable in `layout.tsx`)
 
 ## Key Conventions
 
@@ -16,7 +17,7 @@ You are working on harness-company, a Next.js 15 company introduction / portfoli
 All site content lives in `src/lib/data.ts`. When the user wants to change text, links, services, testimonials, or contact info, edit this file.
 
 ### Colors
-Brand colors and neutrals are in `tailwind.config.ts`. The brand palette is mint/teal by default.
+There is no `tailwind.config.ts` (Tailwind v4 is CSS-first). Theme tokens live in the `@theme` block of `src/app/globals.css`. The template ships a neutral placeholder palette (Tailwind's built-in `neutral` scale). Add a brand accent by declaring `--color-brand-*` in `@theme`.
 
 ### Components
 - UI primitives: `src/components/ui/` (Button, Card, AnimatedSection, PageHeader)
@@ -27,21 +28,25 @@ Brand colors and neutrals are in `tailwind.config.ts`. The brand palette is mint
 ### Animations
 All sections use `AnimatedSection` wrapper (intersection observer + Framer Motion fade-up).
 
-### Supabase
-- Client in `src/lib/supabase.ts`
-- Auth hook in `src/hooks/useAuth.ts`
-- Contact form saves to `contacts` table
+### Data & Auth (Neon + password)
+- DB layer (server-only): `src/lib/db.ts` — Neon client, null-safe when `DATABASE_URL` unset
+- Admin auth (server-only): `src/lib/auth.ts` — sha256 session token + httpOnly cookie
+- Client fetch helpers: `src/lib/api.ts` — talks to `/api/*` route handlers
+- Route handlers: `src/app/api/contact`, `/api/admin/{login,logout,session,contacts}`
+- Auth hook: `src/hooks/useAuth.ts` — cookie-session state
+- Contact form saves to the `contacts` table via `POST /api/contact`
 
 ### File Ownership
 | Change | File |
 |---|---|
 | Site content | `src/lib/data.ts` |
-| Colors | `tailwind.config.ts` |
+| Colors | `src/app/globals.css` `@theme` block |
 | Font | `src/app/layout.tsx` |
-| Navigation | `src/lib/data.ts` → `navLinks` |
-| Contact form | `src/components/sections/Contact.tsx` |
+| Contact form → DB | `src/lib/db.ts` + `src/app/api/contact/route.ts` |
+| Admin auth | `src/lib/auth.ts` + `src/app/api/admin/*` |
 | Admin table | `src/components/admin/ContactTable.tsx` |
 | Animations | `src/components/ui/AnimatedSection.tsx` |
+| DB / admin credentials | `.env.local` (`DATABASE_URL`, `ADMIN_PASSWORD`) |
 
 ### Code Style
 - Use TypeScript strict mode
@@ -55,13 +60,11 @@ All sections use `AnimatedSection` wrapper (intersection observer + Framer Motio
 1. GitHub push → Vercel 자동 재배포 (main 브랜치)
 2. Vercel 환경변수: `.env.example` 키 전부 입력
 
-## DB 선택: Supabase vs Firebase
-| | Supabase | Firebase |
-|---|---|---|
-| DB | PostgreSQL (SQL) | Firestore (NoSQL) |
-| 무료 한도 | 500MB DB | 1GB 저장 |
-| 추천 용도 | 구조화 데이터, 관리자 패널 | 실시간, 모바일 |
-이 템플릿은 Supabase 사용. admin 경로는 robots.ts에서 크롤링 차단됨.
+## DB / 인증: Neon + 비밀번호
+- DB: Neon (서버리스 PostgreSQL), `DATABASE_URL` 환경변수. Vercel → Storage → Neon 연동 시 자동 주입.
+- `DATABASE_URL` 미설정이어도 빌드/실행 가능 (연락처 폼은 "저장 설정 전", 관리자 표는 빈 상태).
+- 관리자 인증: 단일 비밀번호 `ADMIN_PASSWORD`(서버 전용) + httpOnly 세션 쿠키. 별도 사용자 계정 없음.
+- DB 접근은 서버 사이드 전용. admin 경로는 robots.ts에서 크롤링 차단됨.
 
 ## SEO 설정
 - `.env.local`에 `GOOGLE_SITE_VERIFICATION`, `NAVER_SITE_VERIFICATION` 입력

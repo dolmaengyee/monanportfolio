@@ -1,33 +1,37 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import type { User } from '@supabase/supabase-js'
+import { adminLogout, adminSession } from '@/lib/api'
 
-/* ── Supabase Auth Hook ──────────────────────────────
- *  Provides reactive auth state for the admin panel.
- *  Uses onAuthStateChange to stay in sync across tabs.
+/* ── Admin Auth Hook ─────────────────────────────────
+ *  Reactive auth state for the admin panel, backed by the
+ *  httpOnly session cookie. Checks /api/admin/session on
+ *  mount; logout clears the cookie via /api/admin/logout.
  * ──────────────────────────────────────────────────── */
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
+    let active = true
+    adminSession()
+      .then((ok) => {
+        if (!active) return
+        setAuthenticated(ok)
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+    }
   }, [])
 
-  const logout = () => supabase.auth.signOut()
+  const logout = async () => {
+    await adminLogout()
+    setAuthenticated(false)
+    window.location.href = '/admin/login'
+  }
 
-  return { user, loading, logout }
+  return { authenticated, loading, logout }
 }

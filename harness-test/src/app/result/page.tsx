@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import type { TypeNumber } from "@/data/questions"
 import { results } from "@/data/results"
 import { ResultCard } from "@/components/test/ResultCard"
-import { saveTestResult } from "@/lib/supabase"
+import { saveTestResult } from "@/lib/api"
 import { Footer } from "@/components/layout/Footer"
 import type { TypeScores, TypeRanking } from "@/lib/testLogic"
 import type { LikertAnswer } from "@/data/questions"
@@ -47,6 +47,7 @@ export default function ResultPage() {
     setFinalType(parsed.finalType)
 
     const phone = sessionStorage.getItem("participant-phone") || undefined
+    const consentedAt = sessionStorage.getItem("participant-consented-at") || undefined
 
     saveTestResult({
       name,
@@ -55,6 +56,7 @@ export default function ResultPage() {
       scores: parsed.scores,
       ranking: parsed.ranking,
       answers: parsed.answers,
+      consentedAt,
     }).then((id) => {
       if (id) setResultId(id)
       setSaving(false)

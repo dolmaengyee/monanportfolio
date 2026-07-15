@@ -2,6 +2,8 @@
 **/.DS_Store
 .env
 .env.local
+# secrets / tokens kept as notes
+notion.md
 **/dist/
 **/build/
 **/.next/

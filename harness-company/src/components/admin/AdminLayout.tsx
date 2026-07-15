@@ -10,7 +10,7 @@ import { LayoutDashboard, LogOut, ArrowLeft } from 'lucide-react'
  *  Provides navigation, user info, and logout.
  * ──────────────────────────────────────────────────── */
 export function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
 
   return (
     <div className="flex min-h-screen">
@@ -44,7 +44,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             Admin Dashboard
           </h2>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-neutral-500">{user?.email}</span>
+            <span className="text-sm text-neutral-500">관리자</span>
             <button
               onClick={logout}
               className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900"

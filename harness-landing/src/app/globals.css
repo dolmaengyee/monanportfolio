@@ -1,22 +1,25 @@
 @import "tailwindcss";
 
-/* =============================================================================
-   Tailwind v4 Theme Configuration
-   ============================================================================= */
+/* ── Theme tokens ────────────────────────────────────
+ *  Placeholders — designer replaces these during planning.
+ *  Do NOT treat the defaults as the project's identity.
+ *  The brand-* scale below is a neutral gray so an
+ *  unstyled build still reads cleanly; the designer picks
+ *  the actual hue per project and swaps every value.
+ * ──────────────────────────────────────────────────── */
 @theme {
-  /* -- Brand Colors -- */
-  /* Change these to match your brand identity */
-  --color-brand-50: #f0f9ff;
-  --color-brand-100: #e0f2fe;
-  --color-brand-200: #bae6fd;
-  --color-brand-300: #7dd3fc;
-  --color-brand-400: #38bdf8;
-  --color-brand-500: #0ea5e9;
-  --color-brand-600: #0284c7;
-  --color-brand-700: #0369a1;
-  --color-brand-800: #075985;
-  --color-brand-900: #0c4a6e;
-  --color-brand-950: #082f49;
+  /* Brand scale — neutral placeholder. Designer picks the actual hue. */
+  --color-brand-50: #f8fafc;
+  --color-brand-100: #f1f5f9;
+  --color-brand-200: #e2e8f0;
+  --color-brand-300: #cbd5e1;
+  --color-brand-400: #94a3b8;
+  --color-brand-500: #64748b;
+  --color-brand-600: #475569;
+  --color-brand-700: #334155;
+  --color-brand-800: #1e293b;
+  --color-brand-900: #0f172a;
+  --color-brand-950: #020617;
 
   /* -- Font Family --
    * `--font-sans` is injected by `next/font/google` in layout.tsx.
@@ -63,7 +66,7 @@ body {
   @apply bg-white text-gray-900 antialiased;
 }
 
-/* Selection color */
+/* Selection color — designer overrides per palette. */
 ::selection {
   @apply bg-brand-200 text-brand-900;
 }

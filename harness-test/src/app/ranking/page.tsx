@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { getResultCounts } from "@/lib/supabase"
+import { getRanking } from "@/lib/api"
 import { results } from "@/data/results"
 import { TypeIcon } from "@/components/ui/TypeIcon"
 import type { TypeNumber } from "@/data/questions"
@@ -19,7 +19,14 @@ export default function RankingPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getResultCounts().then((c) => {
+    getRanking().then((entries) => {
+      // Start every result type at 0 so the distribution always lists all types.
+      const c = Object.fromEntries(
+        Object.keys(results).map((t) => [Number(t), 0]),
+      ) as Record<TypeNumber, number>
+      for (const { finalType, count } of entries) {
+        if (finalType in c) c[finalType] = count
+      }
       setCounts(c)
       setLoading(false)
     })

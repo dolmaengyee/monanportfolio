@@ -40,11 +40,12 @@ boundaries:
 - `params`는 Promise (Next 15+) → `await params`
 - 이미지는 `next/image` 사용 + `width`/`height`
 
-### 2. Supabase
-- RLS 활성화 안 함 → `permission denied`
-- RLS 정책 없음 → 빈 응답 (에러 없이!)
-- `NEXT_PUBLIC_SUPABASE_*` 환경변수 누락 → undefined
-- anon key를 service_role로 착각 → 공개 노출 위험
+### 2. Neon DB / API 라우트
+- `DATABASE_URL` 미설정 → DB 기능이 조용히 꺼짐 (템플릿은 DB 없이도 동작하도록 설계됨 — 저장이 안 되면 먼저 env 확인)
+- `DATABASE_URL`을 클라이언트 컴포넌트에서 접근 → undefined (서버 전용 — Route Handler에서만 사용)
+- 테이블 미생성 → `relation "..." does not exist` (`npm run setup` DB 메뉴 또는 Neon 콘솔 SQL Editor에서 CREATE TABLE 실행)
+- `vercel env pull .env.local` 안 함 → 로컬에서만 DB 연결 실패
+- 관리자 API 401 → `ADMIN_PASSWORD` env 누락 또는 쿠키 만료 (재로그인)
 
 ### 3. 환경변수
 - `.env.local` 수정 후 재시작 안 함 → 반영 안 됨
@@ -88,33 +89,31 @@ boundaries:
 - 항상: 예 / 간헐적: 아니요
 
 ### 가설
-1. (유력) Supabase RLS 정책 INSERT 누락
-2. anon key 잘못됨
-3. 네트워크 CORS
+1. (유력) Neon에 test_results 테이블 미생성
+2. DATABASE_URL 미설정 (vercel env pull 안 함)
+3. API 라우트 응답 파싱 오류
 
 ### 원인
-`test_results` 테이블에 INSERT 정책이 없어서 Supabase가 거부함.
-가설 1 확정. .env.local의 URL/key는 정상 응답.
+`test_results` 테이블이 생성되지 않아 INSERT 시
+`relation "test_results" does not exist` 발생. 가설 1 확정.
+서버 로그(터미널)에서 에러 메시지 확인됨.
 
 ### 수정
-Supabase SQL Editor에서 실행:
-```sql
-CREATE POLICY "public_insert"
-ON test_results FOR INSERT WITH CHECK (true);
-```
+`npm run setup` → [2] 데이터 저장소 설정 재실행 (테이블 자동 생성),
+또는 Neon 콘솔(Vercel → Storage → Neon → Open in Neon) SQL Editor에서
+CLAUDE.md의 CREATE TABLE 문 실행.
 
 추가로 .env.local 재로드 위해 개발 서버 재시작.
 
 ### 재발 방지
-- `npm run setup` → [2] 데이터 저장소 설정을 다시 돌리면
-  이 정책이 포함된 SQL을 자동 제공함
-- CLAUDE.md에 "Supabase 셋업 체크리스트" 항목 확인
+- `npm run setup`의 DB 메뉴가 테이블 생성까지 자동 처리함
+- CLAUDE.md의 DB 섹션에 있는 스키마와 코드가 일치하는지 확인
 
 ### 적용 후 확인
-1. Supabase SQL Editor에서 정책 추가
+1. 테이블 생성 확인
 2. 로컬에서 npm run dev 재시작
 3. /test 다시 시도
-4. 브라우저 DevTools Network 탭에서 201 Created 확인
+4. 브라우저 DevTools Network 탭에서 /api/results 200 확인
 ```
 
 ## 디버깅 원칙
@@ -129,7 +128,7 @@ try {
 }
 
 // ⭕ 원인 파악 후 수정
-// → Supabase RLS 정책 추가로 근본 해결
+// → 테이블 생성/환경변수 설정으로 근본 해결
 ```
 
 ### 2. 최소 수정
@@ -138,7 +137,7 @@ try {
 
 ### 3. 가설 → 증거
 "아마 이것 때문일 거예요"로 끝나면 안 됨.
-콘솔 로그, 네트워크 탭, Supabase 로그 등으로 **확증**.
+콘솔 로그, 네트워크 탭, 서버 터미널 로그, Neon 콘솔 등으로 **확증**.
 
 ### 4. 재현 테스트
 고치기 전에 "실패하는 테스트"를 먼저 쓰면 재발 방지 가능.
@@ -156,11 +155,11 @@ try {
 - [ ] `localStorage`/`sessionStorage` SSR 시 접근?
 - [ ] 브라우저 확장프로그램(번역 등)이 DOM 건드림?
 
-### "permission denied" (Supabase)
-- [ ] RLS 활성화?
-- [ ] SELECT/INSERT 정책 각각?
-- [ ] anon key 맞는지?
-- [ ] `NEXT_PUBLIC_` 접두사?
+### DB 저장이 안 될 때 (Neon)
+- [ ] `DATABASE_URL`이 .env.local에 있는지? (`vercel env pull .env.local`)
+- [ ] 테이블 생성했는지? (`relation does not exist` 에러 확인)
+- [ ] DB 접근 코드가 Route Handler(서버)에 있는지? (클라이언트에서 직접 접근 금지)
+- [ ] Vercel 배포본이면 Neon 연동 후 재배포했는지?
 
 ### Vercel 배포 실패
 - [ ] 로컬 `npm run build` 통과?

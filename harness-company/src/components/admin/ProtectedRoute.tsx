@@ -9,24 +9,24 @@ import { useAuth } from '@/hooks/useAuth'
  *  if the user is not authenticated.
  * ──────────────────────────────────────────────────── */
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth()
+  const { authenticated, loading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !authenticated) {
       router.push('/admin/login')
     }
-  }, [user, loading, router])
+  }, [authenticated, loading, router])
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-900 border-t-transparent" />
       </div>
     )
   }
 
-  if (!user) return null
+  if (!authenticated) return null
 
   return <>{children}</>
 }

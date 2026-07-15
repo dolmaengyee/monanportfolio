@@ -13,20 +13,18 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
 
-    setTimeout(() => {
-      const ok = login(password)
-      if (ok) {
-        router.replace("/admin")
-      } else {
-        setError("비밀번호가 올바르지 않습니다")
-        setLoading(false)
-      }
-    }, 400)
+    const ok = await login(password)
+    if (ok) {
+      router.replace("/admin")
+    } else {
+      setError("비밀번호가 올바르지 않습니다")
+      setLoading(false)
+    }
   }
 
   return (

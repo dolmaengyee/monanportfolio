@@ -39,8 +39,8 @@ boundaries:
 - **Tailwind CSS v4** — 유틸리티 클래스
 - **Framer Motion** — 모든 인터랙티브 애니메이션
 - **Lucide React** — 아이콘 (이모지 금지)
-- **Supabase** (company/test) — DB
-- **Pretendard** — 한글 폰트
+- **Neon** (company/test) — 서버리스 PostgreSQL. `DATABASE_URL`은 서버 전용 — DB 접근은 반드시 `src/app/api/` Route Handler를 통해서만. 클라이언트 컴포넌트에서 DB 직접 접근 금지
+- **폰트** — 고정 폰트 없음. `next/font/google`로 프로젝트 무드에 맞춰 선택 (Noto Sans KR은 플레이스홀더)
 
 ## 작업 원칙
 
@@ -146,11 +146,21 @@ src/
     sections/       페이지 섹션 (Hero, Features)
     layout/         Navbar, Footer
   lib/
-    data.ts         모든 콘텐츠
-    supabase.ts     DB 클라이언트
+    data.ts         모든 콘텐츠 (test 템플릿은 src/data/*.ts)
+    db.ts           Neon DB 헬퍼 (서버 전용)
+    api.ts          클라이언트용 fetch 헬퍼
     utils.ts        헬퍼 함수
+  app/api/          Route Handler (DB 읽기/쓰기는 전부 여기서)
   hooks/            커스텀 훅
 ```
+
+### 6. 개인정보를 다루는 플로우 (test 템플릿 등)
+
+이름/연락처 같은 개인정보를 수집하는 화면은 반드시:
+- 인트로(소개) 화면과 정보 입력 화면을 **2단계로 분리** (인트로 먼저, 다음 단계에서 입력)
+- 정보 입력 화면에 **개인정보 수집·이용 동의 체크박스(필수)** 포함 — 체크 전 진행 불가, 기본 체크 금지
+- 수집 항목·목적·보유 기간을 펼쳐볼 수 있게 표기
+- 개인정보(전화번호 등)는 공개 API 응답에 절대 포함하지 않기 (관리자 인증된 라우트에서만)
 
 ## 출력 형식
 

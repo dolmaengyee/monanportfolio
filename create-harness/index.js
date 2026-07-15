@@ -208,7 +208,7 @@ async function main() {
   console.log('    ' + chalk.cyan('npm run setup') + chalk.gray('   (메뉴에서 선택)'))
   console.log(chalk.gray('      · 인터넷에 올리기 (GitHub + Vercel)'))
   if (type !== 'landing') {
-    console.log(chalk.gray('      · 데이터 저장소 설정 (Supabase)'))
+    console.log(chalk.gray('      · 데이터 저장소 설정 (Neon)'))
   }
   if (type === 'test') {
     console.log(chalk.gray('      · 관리자 비밀번호 설정'))

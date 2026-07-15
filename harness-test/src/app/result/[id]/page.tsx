@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getResultById } from "@/lib/supabase"
+import { getPublicResult } from "@/lib/db"
 import { results } from "@/data/results"
 import { ResultCard } from "@/components/test/ResultCard"
 import { Footer } from "@/components/layout/Footer"
@@ -10,9 +10,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params
-  const row = await getResultById(id)
+  const row = await getPublicResult(id)
   if (!row) return { title: "결과를 찾을 수 없어요" }
-  const result = results[row.final_type]
+  const result = results[row.finalType]
   return {
     title: `${row.name}님의 성향 결과 — ${result.name}`,
     description: result.tagline,
@@ -25,10 +25,10 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function SharedResultPage({ params }: Props) {
   const { id } = await params
-  const row = await getResultById(id)
+  const row = await getPublicResult(id)
   if (!row) notFound()
 
-  const result = results[row.final_type]
+  const result = results[row.finalType]
 
   return (
     <div className="flex-1 flex flex-col">

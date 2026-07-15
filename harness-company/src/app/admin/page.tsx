@@ -6,7 +6,7 @@ import { ContactTable } from '@/components/admin/ContactTable'
 
 /* ── Admin Dashboard ─────────────────────────────────
  *  Protected page — redirects to /admin/login if not authenticated.
- *  Displays submitted contact form entries from Supabase.
+ *  Displays submitted contact form entries from Neon.
  * ──────────────────────────────────────────────────── */
 export default function AdminPage() {
   return (

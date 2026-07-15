@@ -4,24 +4,24 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { BarChart2, RefreshCw, LogOut, ExternalLink, ChevronDown, ChevronUp, Users } from "lucide-react"
 import { useAdminAuth } from "@/hooks/useAdminAuth"
-import { getAllParticipants, getResultCounts } from "@/lib/supabase"
-import type { TestResultRow } from "@/lib/supabase"
+import { getAdminResults } from "@/lib/api"
+import type { AdminResultRow } from "@/lib/api"
 import { results } from "@/data/results"
 import { TypeIcon } from "@/components/ui/TypeIcon"
 import type { TypeNumber } from "@/data/questions"
 
 export default function AdminPage() {
   const router = useRouter()
-  const { isAuthenticated, loading, logout } = useAdminAuth()
-  const [participants, setParticipants] = useState<TestResultRow[]>([])
+  const { isAuthenticated, logout } = useAdminAuth()
+  const [participants, setParticipants] = useState<AdminResultRow[]>([])
   const [counts, setCounts] = useState<Record<TypeNumber, number> | null>(null)
   const [search, setSearch] = useState("")
   const [fetching, setFetching] = useState(false)
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) router.replace("/admin/login")
-  }, [isAuthenticated, loading, router])
+    if (isAuthenticated === false) router.replace("/admin/login")
+  }, [isAuthenticated, router])
 
   useEffect(() => {
     if (isAuthenticated) fetchData()
@@ -29,18 +29,29 @@ export default function AdminPage() {
 
   const fetchData = async () => {
     setFetching(true)
-    const [rows, c] = await Promise.all([getAllParticipants(), getResultCounts()])
+    const rows = await getAdminResults()
+    if (rows === null) {
+      router.replace("/admin/login")
+      return
+    }
+    // Type distribution is derived client-side from the full rows.
+    const c = Object.fromEntries(
+      Object.keys(results).map((t) => [Number(t), 0]),
+    ) as Record<TypeNumber, number>
+    for (const row of rows) {
+      if (row.finalType in c) c[row.finalType]++
+    }
     setParticipants(rows)
     setCounts(c)
     setFetching(false)
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     router.replace("/admin/login")
   }
 
-  if (loading || !isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
@@ -192,10 +203,10 @@ export default function AdminPage() {
 
           {!fetching &&
             filtered.map((p) => {
-              const result = results[p.final_type]
+              const result = results[p.finalType]
               const isExpanded = expandedId === p.id
               const shareUrl = `${siteUrl}/result/${p.id}`
-              const date = new Date(p.created_at)
+              const date = new Date(p.createdAt)
               const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`
 
               return (

@@ -7,9 +7,10 @@ Company introduction / portfolio website template with admin panel.
 - Next.js 15 (App Router)
 - React 19
 - TypeScript (strict mode)
-- Tailwind CSS v4
+- Tailwind CSS v4 (CSS-first `@theme` in `globals.css` — no `tailwind.config.ts`)
 - Framer Motion (scroll-triggered animations)
-- Supabase (contact form storage + admin authentication)
+- Neon (serverless Postgres) for contact form storage — server-side only, optional
+- Password-based admin auth (server `ADMIN_PASSWORD` + httpOnly cookie)
 - Lucide React (icons)
 - Fonts via `next/font/google` — **no fixed font**. Ships with
   Noto Sans KR as a placeholder; designer swaps during planning
@@ -24,10 +25,12 @@ expected to design and build the pages from scratch, tailored to the actual
 company — not to fill in a pre-baked schema.
 
 The admin panel IS preserved (it is not content, it is app functionality):
-- `src/app/admin/login` — Supabase auth
+- `src/app/admin/login` — password login (posts to `/api/admin/login`)
 - `src/app/admin` — contact submissions table
 - `src/components/admin/` — `AdminLayout`, `ContactTable`, `ProtectedRoute`
-- `src/hooks/useAuth.ts`
+- `src/hooks/useAuth.ts` — cookie-session auth state
+- `src/app/api/` — `contact`, `admin/login`, `admin/logout`, `admin/session`, `admin/contacts` route handlers
+- `src/lib/db.ts` (Neon, server-only), `src/lib/auth.ts` (session, server-only), `src/lib/api.ts` (client fetch helpers)
 
 ## Planning flow (before writing code)
 
@@ -45,13 +48,14 @@ src/
 │   ├── layout.tsx     # Root layout (font, SEO, Analytics)
 │   ├── page.tsx       # Home — empty placeholder
 │   ├── admin/         # Admin dashboard (preserved — protected)
+│   ├── api/           # Route handlers: contact, admin/{login,logout,session,contacts}
 │   ├── opengraph-image.tsx, icon.svg, robots.ts, sitemap.ts
 │   └── error.tsx, not-found.tsx, loading.tsx
 ├── components/
 │   ├── admin/         # AdminLayout, ContactTable, ProtectedRoute (preserved)
 │   └── ui/            # Button, Card, AnimatedSection (reusable primitives)
-├── hooks/             # useAuth (Supabase auth hook)
-└── lib/               # data.ts (siteConfig only), supabase.ts, utils.ts
+├── hooks/             # useAuth (cookie-session auth hook)
+└── lib/               # data.ts (siteConfig), db.ts, auth.ts, api.ts, utils.ts
 ```
 
 Claude creates `components/sections/`, `components/layout/`, sub-page routes,
@@ -69,9 +73,11 @@ from a pre-baked schema.
 
 ### Colors / Branding
 
-Edit `tailwind.config.ts`:
-- `brand` colors — primary accent (default: mint/teal)
-- `neutral` colors — grays and text
+There is **no `tailwind.config.ts`** — Tailwind v4 is CSS-first. Theme tokens
+live in the `@theme` block of `src/app/globals.css`. The template ships with a
+neutral placeholder palette (Tailwind's built-in `neutral` scale). To add a
+brand accent, define it in `@theme` (e.g. `--color-brand-500: #...;`) and use
+`bg-brand-500` etc. — do not reintroduce a config file.
 
 ### Font
 
@@ -85,39 +91,44 @@ The template uses `next/font/google` — no font file is bundled. To change:
 
 Icons use Lucide React. Browse at https://lucide.dev/icons and import directly in the component that needs them.
 
-## Supabase Setup
+## Neon (Postgres) Setup
 
-1. Create a Supabase project at https://supabase.com
-2. Copy `.env.example` to `.env.local` and fill in your Supabase URL and anon key
-3. Run this SQL in the Supabase SQL Editor:
+The database is **optional** — the site builds and runs with zero env vars.
+Without `DATABASE_URL`, the contact form reports "저장 설정 전" and the admin
+table is empty; nothing crashes. All DB access is server-side only (`src/lib/db.ts`).
+
+1. On Vercel: project → **Storage → Neon** 연동 (Create/Connect). `DATABASE_URL`
+   is auto-injected into every environment — no manual copy needed.
+2. Local dev: run `vercel env pull .env.local` to download `DATABASE_URL`
+   (or paste a Neon connection string into `.env.local`).
+3. The `contacts` table is created automatically on first use. To create it
+   by hand instead, run this in the Neon SQL Editor:
 
 ```sql
-create table contacts (
-  id uuid default gen_random_uuid() primary key,
-  name text not null,
-  email text not null,
+CREATE TABLE IF NOT EXISTS contacts (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  email text,
   phone text,
-  message text not null,
-  created_at timestamp with time zone default now()
+  message text,
+  created_at timestamptz DEFAULT now()
 );
 ```
 
-4. Enable Row Level Security (RLS) on the `contacts` table:
-
-```sql
--- Allow anyone to INSERT (public contact form)
-create policy "Allow public insert" on contacts for insert with check (true);
-
--- Allow authenticated users to SELECT (admin dashboard)
-create policy "Allow authenticated select" on contacts for select using (auth.role() = 'authenticated');
-```
+No row-level security policies are needed: the browser never talks to Postgres
+directly. Writes go through `POST /api/contact`; reads through the cookie-guarded
+`GET /api/admin/contacts`.
 
 ## Admin Setup
 
-1. In Supabase Dashboard: Authentication > Users > Add User
-2. Create an admin user with email and password
-3. Visit `/admin/login` and sign in
-4. The dashboard shows all contact form submissions
+Admin auth is a single shared password (no user accounts, no external provider).
+
+1. Set `ADMIN_PASSWORD` in Vercel → Settings → Environment Variables
+   (server-only — never exposed to the browser). For local dev, add it to `.env.local`.
+2. Visit `/admin/login` and enter the password.
+3. On success the server sets an httpOnly `admin_session` cookie (sha256 of the
+   password, sameSite lax, secure in production, 24h). The dashboard shows all
+   contact submissions. Logout clears the cookie.
 
 ## Commands
 
@@ -134,18 +145,20 @@ npm run lint         # Run ESLint
 | What to change | File to edit |
 |---|---|
 | Site name / SEO description | `src/lib/data.ts` → `siteConfig` |
-| Colors / theme | `tailwind.config.ts` + `src/app/globals.css` `@theme` block |
+| Colors / theme | `src/app/globals.css` `@theme` block (no config file) |
 | Font | `src/app/layout.tsx` (swap `next/font/google` imports) |
 | Page content / sections | Components Claude creates under `src/components/` and `src/app/` routes |
 | Admin table columns | `src/components/admin/ContactTable.tsx` |
+| Contact form → DB queries | `src/lib/db.ts` + `src/app/api/contact/route.ts` |
+| Admin auth logic | `src/lib/auth.ts` + `src/app/api/admin/*` |
 | Animation behavior | `src/components/ui/AnimatedSection.tsx` |
 | SEO metadata | `src/app/layout.tsx` (global) or individual `page.tsx` files |
-| Supabase config | `.env.local` |
+| DB / admin credentials | `.env.local` (`DATABASE_URL`, `ADMIN_PASSWORD`) |
 
 ## Guidelines
 
 - Respect references: if the user provides one, extract actual colors / spacing / layout from it — do not fall back to template defaults.
-- Avoid template-looking defaults: dark `bg-neutral-900` hero with `brand-500/20` blur blobs → 3-col service grid → centered testimonials is the obvious "AI did this" pattern. Pick a layout that matches the project's feel.
+- Avoid template-looking defaults: dark `bg-neutral-900` hero with soft accent blur blobs → 3-col service grid → centered testimonials is the obvious "AI did this" pattern. Pick a layout that matches the project's feel.
 - Navigation pattern must match the site: route-based for multi-page company sites, hash anchors for single-page scroll. Do not mix without intent.
 - Every button / link must work (`onClick`, `type="submit"`, or a real `href`). No empty `href="#"`.
 - If you add a sub-page linked from the navbar, actually create the route under `src/app/`. No dangling links.
@@ -165,20 +178,24 @@ Vercel 대시보드 → 프로젝트 → Settings → Environment Variables
 
 ---
 
-## DB 선택 가이드: Supabase vs Firebase
+## DB / 인증 구조 (Neon + 비밀번호)
 
-이 템플릿은 **Supabase** 기반입니다.
+이 템플릿은 **Neon(서버리스 PostgreSQL)** 기반이며, DB 접근은 전부 서버
+사이드(`src/lib/db.ts`)에서만 일어납니다. 브라우저는 Postgres에 직접 접속하지
+않습니다.
 
-| 항목 | Supabase | Firebase |
-|---|---|---|
-| DB 종류 | PostgreSQL (SQL) | Firestore (NoSQL) |
-| 쿼리 방식 | SQL / JavaScript SDK | 문서 기반 쿼리 |
-| 인증 | 이메일, OAuth 내장 | 이메일, OAuth 내장 |
-| 무료 한도 | DB 500MB, 대역폭 2GB | 1GB 저장, 읽기 50K/일 |
-| 어울리는 프로젝트 | 구조화 데이터, 관리자 패널 | 실시간 채팅, 모바일 앱 |
-| 로그인 방법 | GitHub으로 로그인 | Google 계정으로 로그인 |
+| 항목 | 내용 |
+|---|---|
+| DB | Neon (서버리스 PostgreSQL), `DATABASE_URL` 환경변수 |
+| 연동 | Vercel → Storage → Neon 연동 시 `DATABASE_URL` 자동 주입 |
+| 로컬 | `vercel env pull .env.local` |
+| DB 없이 실행 | 가능 — 연락처 폼은 "저장 설정 전" 안내, 관리자 표는 빈 상태 |
+| 연락처 저장 | `POST /api/contact` → `contacts` 테이블 |
+| 관리자 조회 | 쿠키 인증된 `GET /api/admin/contacts` |
+| 관리자 인증 | 단일 비밀번호 `ADMIN_PASSWORD` (서버 전용) + httpOnly 쿠키 |
 
-**추천**: 회사/포트폴리오 사이트처럼 정형화된 데이터는 Supabase가 더 적합합니다.
+**참고**: 회사/포트폴리오 사이트처럼 정형화된 데이터에는 Postgres 계열이
+적합하며, Vercel Neon 연동으로 별도 설정 없이 바로 사용할 수 있습니다.
 
 ---
 

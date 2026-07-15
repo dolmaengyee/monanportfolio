@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
  *  Reusable button with variant support.
  *
  *  Variants:
- *    primary  — filled brand color (default)
+ *    primary  — filled neutral color (default)
  *    outline  — bordered, transparent background
  *    ghost    — text-only, no border
  *
@@ -23,9 +23,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<Variant, string> = {
   primary:
-    'bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700 shadow-sm',
+    'bg-neutral-900 text-white hover:bg-neutral-800 active:bg-neutral-700 shadow-sm',
   outline:
-    'border border-brand-500 text-brand-500 hover:bg-brand-50 active:bg-brand-100',
+    'border border-neutral-900 text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200',
   ghost: 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100',
 }
 
@@ -44,7 +44,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
         variantStyles[variant],
         sizeStyles[size],
         className,

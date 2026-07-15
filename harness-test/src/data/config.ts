@@ -6,6 +6,4 @@ export const testConfig = {
   shareHashtag: "#성향테스트",
   ogImage: "/og-image.png",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://your-domain.com",
-  // NEXT_PUBLIC_ vars are embedded at build time — use a strong password and rotate if leaked
-  adminPassword: process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "",
 } as const

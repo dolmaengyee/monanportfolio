@@ -15,7 +15,7 @@
 
 **2단계 — 추가 기능** (필요할 때만, `npm run setup`)
 - 인터넷에 올리기 (GitHub + Vercel)
-- 데이터 저장소 (Supabase)
+- 데이터 저장소 (Neon — Vercel 안에서 무료 생성)
 - 관리자 비밀번호
 - 내 도메인 연결
 
@@ -31,7 +31,7 @@
 | **Git** | 코드 변경 이력 관리 | 처음부터 (필수) |
 | **GitHub** | 코드 온라인 저장소 | 2단계: 배포할 때 |
 | **Vercel** | 자동 배포 서버 | 2단계: 배포할 때 |
-| **Supabase** | 데이터베이스 | 2단계: 저장 기능 필요할 때 |
+| **Neon** | 데이터베이스 (Vercel 마켓플레이스) | 2단계: 저장 기능 필요할 때 |
 | **Cloudflare** | 도메인 DNS 관리 | 2단계: 내 도메인 쓸 때 |
 | **가비아** | 도메인 구매 | 2단계: 내 도메인 쓸 때 |
 
@@ -43,13 +43,12 @@
 
 **지금 당장 필요한 것은 없어요.** 1단계는 인터넷 없이도 완료돼요.
 
-2단계에서 각 기능을 선택하면 그때그때 "이 계정이 필요해요"라고 안내하고 브라우저를 자동으로 열어줘요. **GitHub 하나만 있으면** Vercel · Supabase는 그걸로 바로 로그인돼요.
+2단계에서 각 기능을 선택하면 그때그때 "이 계정이 필요해요"라고 안내하고 브라우저를 자동으로 열어줘요. **GitHub 하나만 있으면** Vercel은 그걸로 바로 로그인되고, DB(Neon)는 Vercel 안에서 만들기 때문에 별도 가입이 없어요.
 
 | 서비스 | 주소 | 언제? |
 |---|---|---|
 | GitHub | [github.com](https://github.com) | 배포 기능 쓸 때 |
-| Vercel | [vercel.com](https://vercel.com) | 배포 기능 쓸 때 (GitHub으로 로그인) |
-| Supabase | [supabase.com](https://supabase.com) | 저장 기능 쓸 때 (GitHub으로 로그인) |
+| Vercel | [vercel.com](https://vercel.com) | 배포 + DB 쓸 때 (GitHub으로 로그인) |
 
 ---
 
@@ -152,7 +151,7 @@ npm run setup
       GitHub + Vercel로 전 세계에 공개 (무료, 5분)
 
   [2] 데이터 저장소 설정
-      Supabase 무료 DB — 테스트 결과 저장
+      Neon 무료 DB (Vercel 연동) — 테스트 결과 저장, 환경변수 자동 주입
 
   [3] 관리자 비밀번호 설정
       /admin 페이지 접속 비밀번호

@@ -17,7 +17,7 @@
 9. [Framer Motion — 애니메이션](#9-framer-motion--애니메이션)
 10. [DB와 백엔드 — 데이터 저장](#10-db와-백엔드--데이터-저장)
 11. [API — 서비스끼리 대화하는 방법](#11-api--서비스끼리-대화하는-방법)
-12. [Supabase vs Firebase — DB 선택](#12-supabase-vs-firebase--db-선택)
+12. [Neon — 하네스의 데이터베이스](#12-neon--하네스의-데이터베이스)
 13. [환경변수 — 비밀 열쇠 관리](#13-환경변수--비밀-열쇠-관리)
 14. [Git과 GitHub — 코드 저장소](#14-git과-github--코드-저장소)
 15. [Vercel — 배포와 CI/CD](#15-vercel--배포와-cicd)
@@ -462,57 +462,40 @@ console.log(data.candidates[0].content.parts[0].text)
 
 ---
 
-## 12. Supabase vs Firebase — DB 선택
+## 12. Neon — 하네스의 데이터베이스
 
-### Supabase
+### Neon이 뭔가요?
 
-Supabase는 **오픈소스 Firebase 대안**이에요. PostgreSQL(SQL) 기반이에요.
+Neon은 **서버리스 PostgreSQL** 서비스예요. Vercel 마켓플레이스에서 클릭 몇 번으로 무료 DB를 만들 수 있어요.
 
 ```
 장점:
 ✅ PostgreSQL 사용 (강력한 SQL 쿼리)
-✅ 관리자 대시보드 깔끔
-✅ GitHub으로 로그인 가능
-✅ 무료로 시작 가능 (DB 500MB)
-✅ 하네스에 이미 연동되어 있음
+✅ Vercel 안에서 바로 생성 — 별도 가입 불필요
+✅ 연동하면 DATABASE_URL이 배포 환경변수에 자동 주입
+✅ 무료 플랜으로 시작 가능
+✅ 안 쓸 때는 자동으로 잠들어서 (scale to zero) 무료 한도가 오래감
 
 단점:
-❌ 무료 플랜 프로젝트가 1주일 비활성 시 일시 정지
+❌ 서버에서만 접속 가능 (브라우저에서 직접 접속 불가 — 그래서 하네스는 API 라우트를 통해 읽고 써요. 오히려 보안상 장점!)
 ```
 
 **설정 방법:**
-1. https://supabase.com → GitHub으로 로그인
-2. New Project 생성
-3. Project Settings → API에서 URL과 anon key 복사
-4. `.env.local`에 붙여넣기
+1. Vercel 대시보드 → 프로젝트 → **Storage** 탭
+2. **Create Database** → **Neon** (무료 플랜) → Connect
+3. `DATABASE_URL`이 Vercel 환경변수에 자동 주입됨
+4. 로컬에서 쓰려면: `vercel env pull .env.local`
 
-### Firebase
-
-Firebase는 **Google의 BaaS 서비스**예요. Firestore(NoSQL) 기반이에요.
-
-```
-장점:
-✅ Google 생태계와 통합
-✅ 실시간 데이터 동기화 (채팅 앱에 좋음)
-✅ Google 계정으로 가입
-✅ 모바일 앱과 연동 쉬움
-
-단점:
-❌ NoSQL이라 복잡한 쿼리 어려움
-❌ 가격 체계 복잡
-```
-
-### 언제 뭘 써?
+### 다른 선택지는?
 
 | 프로젝트 | 추천 |
 |---|---|
-| 회사 소개/포트폴리오 | **Supabase** |
-| 문의 폼, 관리자 패널 | **Supabase** |
-| 실시간 채팅 | Firebase |
-| 모바일 앱 연동 | Firebase |
-| 테스트/퀴즈 앱 | **Supabase** (랭킹 기능) |
+| 회사 소개/포트폴리오, 문의 폼 | **Neon** (하네스 기본) |
+| 테스트/퀴즈 앱, 랭킹 | **Neon** (하네스 기본) |
+| 실시간 채팅, 모바일 앱 연동 | Firebase (Google의 NoSQL BaaS) |
+| 소셜 로그인 등 본격적인 인증 | Supabase (PostgreSQL + Auth 내장) |
 
-> **하네스는 Supabase 기반**이에요. 대부분의 웹사이트에 Supabase가 더 적합합니다.
+> **하네스는 Neon 기반**이에요. Vercel과 한 몸처럼 붙어 있어서 설정이 가장 간단합니다.
 
 ---
 
@@ -522,18 +505,20 @@ Firebase는 **Google의 BaaS 서비스**예요. Firestore(NoSQL) 기반이에요
 
 **왜 필요한가요?**
 ```
-❌ 잘못된 방법 — API 키가 GitHub에 공개됨
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+❌ 잘못된 방법 — DB 접속 주소가 GitHub에 공개됨
+const DB_URL = "postgresql://user:password@xxx.neon.tech/db"
 
 ✅ 올바른 방법 — .env.local 파일에 저장
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const DB_URL = process.env.DATABASE_URL
 ```
 
 **`.env.local` 파일 예시:**
 ```bash
-# DB
-NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+# DB (Vercel의 Neon 연동 시 자동 주입 — vercel env pull로 받아옴)
+DATABASE_URL=postgresql://...
+
+# 관리자 페이지 비밀번호 (서버 전용 — NEXT_PUBLIC_ 붙이면 안 돼요!)
+ADMIN_PASSWORD=나만아는비밀번호
 
 # 사이트
 NEXT_PUBLIC_SITE_URL=https://mysite.com
@@ -544,8 +529,8 @@ NAVER_SITE_VERIFICATION=xyz789
 ```
 
 **규칙:**
-- `NEXT_PUBLIC_` 접두사 → 브라우저에서도 접근 가능 (공개 정보)
-- 접두사 없음 → 서버에서만 접근 가능 (비밀 정보)
+- `NEXT_PUBLIC_` 접두사 → 브라우저에서도 접근 가능 (공개 정보만!)
+- 접두사 없음 → 서버에서만 접근 가능 (비밀 정보: DB 주소, 관리자 비밀번호)
 - `.env.local`은 `.gitignore`에 포함 → GitHub에 올라가지 않음
 
 **Vercel 배포 시:**
@@ -781,7 +766,7 @@ Gemini 구독자라면 Antigravity를 사용해요. `.antigravity.md` 파일을 
 | 템플릿 | 용도 | DB 필요 |
 |---|---|---|
 | `harness-landing` | 랜딩/이벤트/캠페인 페이지 | ❌ |
-| `harness-company` | 회사소개/포트폴리오 + 관리자 | ✅ Supabase |
+| `harness-company` | 회사소개/포트폴리오 + 관리자 | 선택 (Neon) |
 | `harness-test` | 심리/성향 테스트 + 랭킹 | 선택 |
 
 ### GitHub에서 클론하기
@@ -919,7 +904,7 @@ my-company-site/
    (GitHub 레포 + Vercel 연결 자동)
        ↓
 3. .env.local 설정
-   (Supabase, 사이트 URL 등)
+   (Neon DB, 사이트 URL 등 — npm run setup이 자동 안내)
        ↓
 4. npm run dev로 로컬에서 확인
        ↓
@@ -943,7 +928,7 @@ my-company-site/
 
 - **Next.js 공식 문서**: https://nextjs.org/docs
 - **Tailwind CSS 문서**: https://tailwindcss.com/docs
-- **Supabase 문서**: https://supabase.com/docs
+- **Neon 문서**: https://neon.tech/docs
 - **Framer Motion 문서**: https://www.framer.com/motion
 - **Lucide 아이콘**: https://lucide.dev/icons
 - **Google AI Studio**: https://aistudio.google.com

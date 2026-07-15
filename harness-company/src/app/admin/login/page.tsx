@@ -2,18 +2,18 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { adminLogin } from '@/lib/api'
 import { Button } from '@/components/ui/Button'
 import { siteConfig } from '@/lib/data'
 
 /* ── Admin Login Page ────────────────────────────────
- *  Simple email/password login via Supabase Auth.
- *  Create an admin user in the Supabase dashboard first:
- *    Authentication → Users → Add User
+ *  Password-only login. The password is compared against the
+ *  server-side ADMIN_PASSWORD env var; on success an httpOnly
+ *  session cookie is set. Configure ADMIN_PASSWORD in Vercel →
+ *  Settings → Environment Variables.
  * ──────────────────────────────────────────────────── */
 export default function AdminLoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -23,18 +23,16 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError(null)
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { ok, error: loginError } = await adminLogin(password)
 
-    if (authError) {
-      setError(authError.message)
+    if (!ok) {
+      setError(loginError ?? '로그인에 실패했습니다.')
       setLoading(false)
       return
     }
 
     router.push('/admin')
+    router.refresh()
   }
 
   return (
@@ -44,7 +42,7 @@ export default function AdminLoginPage() {
           {siteConfig.name}
         </h1>
         <p className="mt-2 text-center text-sm text-neutral-500">
-          Admin Dashboard Login
+          관리자 로그인
         </p>
 
         <form onSubmit={handleLogin} className="mt-8 space-y-5">
@@ -56,28 +54,10 @@ export default function AdminLoginPage() {
 
           <div>
             <label
-              htmlFor="email"
-              className="mb-1 block text-sm font-medium text-neutral-700"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
-              placeholder="admin@company.com"
-            />
-          </div>
-
-          <div>
-            <label
               htmlFor="password"
               className="mb-1 block text-sm font-medium text-neutral-700"
             >
-              Password
+              비밀번호
             </label>
             <input
               id="password"
@@ -85,13 +65,13 @@ export default function AdminLoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
-              placeholder="Enter your password"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-neutral-900 focus:ring-2 focus:ring-neutral-900/10"
+              placeholder="비밀번호를 입력하세요"
             />
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? '로그인 중...' : '로그인'}
           </Button>
         </form>
       </div>
