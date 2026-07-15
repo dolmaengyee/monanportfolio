@@ -54,50 +54,54 @@
 
 ## AI 도구 선택 (구독 중인 것 1개만)
 
-### Claude Desktop 사용자
+### 복붙 프롬프트 (모든 AI 도구 공통)
 
-**설치:** [claude.ai/download](https://claude.ai/download) → 다운로드 → 로그인
-
-**아래 프롬프트에서 `[Mac 또는 Windows]` 부분만 본인 OS로 바꾸고 붙여넣으세요.**
+AI 도구를 열고 **아래 한 줄만 그대로 붙여넣으세요.** OS 확인, 설치, 실행까지 AI가 알아서 진행해요.
 
 ```
-나 웹사이트 만들려고 하는데 환경 세팅부터 도와줘.
+나 웹사이트 만들려고 해. 코딩은 전혀 몰라.
+https://raw.githubusercontent.com/y-angel-intelligence/y-harness/main/docs/BOOTSTRAP.md
+이 문서를 읽고 순서대로 진행해줘. 내 OS도 직접 확인해서 맞는 방법으로 해줘.
+```
+
+> AI가 내 컴퓨터(OS)를 직접 감지하고, Node.js/Git이 없으면 설치를 도와주고,
+> GitHub/Vercel 로그인이 필요한 순간엔 "브라우저에서 뭘 눌러야 하는지"까지 안내해줘요.
+
+**도구별 설치:**
+
+| AI 구독 | 앱 | 설치 |
+|---|---|---|
+| Claude | Claude Desktop | [claude.ai/download](https://claude.ai/download) → 다운로드 → 로그인 |
+| ChatGPT | Codex | [codex.openai.com](https://codex.openai.com) → 다운로드 또는 웹 → 로그인 |
+| Gemini | Antigravity | Google에서 "Antigravity AI" 검색 → 설치 → Google 계정 로그인 |
+
+<details>
+<summary>AI가 URL을 못 읽는 환경이라면 (전체 프롬프트 펼치기)</summary>
+
+```
+나 웹사이트 만들려고 하는데 환경 세팅부터 도와줘. 코딩은 전혀 몰라.
+내 OS(Mac/Windows)는 직접 확인해서 맞는 방법으로 진행해줘.
 
 내 컴퓨터에 아래 것들이 설치되어 있는지 확인하고, 없으면 설치해줘:
-- Node.js (nvm으로, LTS 버전)
+- Node.js (LTS 버전)
 - Git
 
 다 설치됐으면:
 1. 바탕화면에 y-harness 레포 클론
-   git clone https://github.com/sana197111/y-harness.git
-
+   git clone https://github.com/y-angel-intelligence/y-harness.git
 2. y-harness/create-harness 폴더로 이동
-
 3. npm install 실행 (1회만)
-
 4. node index.js 실행
 
-node index.js 에서는 딱 질문 2개만 나와:
-- 뭘 만들고 싶은지 (랜딩/회사/테스트 중 선택)
-- 프로젝트 이름
+node index.js 에서는 질문 2개만 나와 (뭘 만들지 + 프로젝트 이름).
+끝나면 브라우저에 내 사이트가 자동으로 떠.
 
-그러고 나서 브라우저에 내 사이트가 자동으로 떠.
-
-나중에 인터넷 배포나 데이터베이스가 필요하면 그때 프로젝트 폴더에서
-npm run setup 실행하면 메뉴가 나와서 하나씩 따라가면 돼.
-
-내 OS는 [Mac 또는 Windows]이야.
+나중에 배포/DB가 필요하면 프로젝트 폴더에서 npm run setup 실행.
+GitHub이나 Vercel 로그인이 필요한 단계에서는 브라우저에서
+뭘 눌러야 하는지 미리 알려주고 기다려줘.
 ```
 
-### Codex 사용자
-
-**설치:** [codex.openai.com](https://codex.openai.com) → 다운로드 또는 웹 → 로그인
-프롬프트는 위 Claude Desktop 것과 동일합니다. (OS만 본인 것으로)
-
-### Antigravity 사용자
-
-**설치:** Google에서 "Antigravity AI" 검색 → 설치 → Google 계정 로그인
-프롬프트는 위 Claude Desktop 것과 동일합니다. (OS만 본인 것으로)
+</details>
 
 ---
 

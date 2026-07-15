@@ -569,7 +569,7 @@ Git으로 관리하는 코드를 **인터넷에 저장**하는 서비스예요. 
 
 ```bash
 # 1. GitHub에서 레포 주소 복사 (Code → HTTPS 복사)
-git clone https://github.com/사용자명/harness.git
+git clone https://github.com/y-angel-intelligence/y-harness.git
 
 # 2. 폴더 이동
 cd harness
@@ -777,7 +777,7 @@ Gemini 구독자라면 Antigravity를 사용해요. `.antigravity.md` 파일을 
 # Windows: https://git-scm.com 설치
 
 # 2. 클론 (내 컴퓨터로 복사)
-git clone https://github.com/[사용자명]/harness.git
+git clone https://github.com/y-angel-intelligence/y-harness.git
 
 # 3. 폴더 이동
 cd harness

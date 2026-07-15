@@ -62,7 +62,51 @@ function sanitizeName(input) {
   return input.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
+// ── Preflight (doctor) — verify environment before asking anything ────────────
+// Prints friendly per-OS guidance in Korean instead of failing with a stack trace.
+function preflight() {
+  const problems = []
+  const isMac = process.platform === 'darwin'
+  const isWin = process.platform === 'win32'
+  const osName = isMac ? 'Mac' : isWin ? 'Windows' : 'Linux'
+
+  const nodeMajor = Number(process.versions.node.split('.')[0])
+  if (nodeMajor < 20) {
+    problems.push({
+      what: `Node.js 버전이 너무 낮아요 (현재 v${process.versions.node}, 필요: v20 이상)`,
+      fix: isMac
+        ? '터미널에서: nvm install --lts && nvm use --lts\n     (nvm이 없다면: https://nodejs.org 에서 LTS 설치)'
+        : 'https://nodejs.org 에서 LTS 버전을 다운로드해 설치한 뒤, 터미널을 새로 열어주세요.',
+    })
+  }
+
+  try {
+    execSync('git --version', { stdio: 'pipe' })
+  } catch {
+    problems.push({
+      what: 'Git이 설치되어 있지 않아요',
+      fix: isMac
+        ? '터미널에서 git --version 을 입력하면 설치 팝업이 떠요. 팝업의 "설치"를 누르세요.'
+        : isWin
+          ? 'https://git-scm.com 에서 다운로드해 설치한 뒤, 터미널을 새로 열어주세요.'
+          : '패키지 매니저로 설치하세요. 예: sudo apt install git',
+    })
+  }
+
+  if (problems.length > 0) {
+    console.log(`\n  잠깐! 시작하기 전에 준비가 필요해요 (${osName})\n`)
+    for (const p of problems) {
+      console.log(`  문제: ${p.what}`)
+      console.log(`  해결: ${p.fix}\n`)
+    }
+    console.log('  위 항목을 해결한 뒤 다시 실행해주세요: node index.js')
+    console.log('  AI 도구를 쓰고 있다면 이 메시지를 그대로 보여주면 알아서 도와줘요.\n')
+    process.exit(1)
+  }
+}
+
 async function main() {
+  preflight()
   await loadDeps()
 
   const args = process.argv.slice(2)

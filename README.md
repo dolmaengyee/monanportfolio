@@ -5,6 +5,21 @@
 
 ---
 
+## 빠른 시작 (이것만 하면 돼요)
+
+AI 도구(Claude Desktop / Codex / Antigravity)를 열고 아래를 붙여넣으세요:
+
+```
+나 웹사이트 만들려고 해. 코딩은 전혀 몰라.
+https://raw.githubusercontent.com/y-angel-intelligence/y-harness/main/docs/BOOTSTRAP.md
+이 문서를 읽고 순서대로 진행해줘. 내 OS도 직접 확인해서 맞는 방법으로 해줘.
+```
+
+OS 감지, Node.js/Git 설치, 프로젝트 생성, 로그인 안내까지 AI가 알아서 진행해요.
+자세한 안내는 [docs/SETUP.md](./docs/SETUP.md), 아래 단계별 설명은 직접 하고 싶은 분용이에요.
+
+---
+
 ## 📚 학습 자료
 
 | 문서 | 설명 |
