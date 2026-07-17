@@ -27,15 +27,15 @@ export default function Home() {
 
         <div
           id="top"
-          className="relative z-10 mx-auto flex min-h-[calc(100svh-40px)] max-w-6xl flex-col justify-end pb-2 pt-12"
+          className="relative z-10 mx-auto flex min-h-[calc(100svh-40px)] max-w-md flex-col justify-end pb-2 pt-12"
         >
           <p className="mb-4 font-display text-lg text-[#ffdf37] drop-shadow-[0_2px_14px_rgba(255,223,55,0.42)]">
             모여서 만드는 이야기
           </p>
-          <h1 className="max-w-[11ch] font-display text-[clamp(3.6rem,18vw,9.5rem)] leading-[0.9] text-white drop-shadow-[0_6px_30px_rgba(18,9,31,0.9)]">
+          <h1 className="max-w-[11ch] font-display text-[clamp(3.6rem,18vw,6rem)] leading-[0.9] text-white drop-shadow-[0_6px_30px_rgba(18,9,31,0.9)]">
             모닥불
           </h1>
-          <div className="mt-7 max-w-2xl space-y-5 text-[1.03rem] font-semibold leading-8 text-brand-50/90 sm:text-xl sm:leading-9">
+          <div className="mt-7 max-w-md space-y-5 text-[1.03rem] font-semibold leading-8 text-brand-50/90 sm:text-xl sm:leading-9">
             <p>
               귀여운 픽셀 마을 아래, 아무도 말하지 못한 틈이 숨어 있습니다.
             </p>
@@ -57,11 +57,11 @@ export default function Home() {
 
       <section id="club" className="relative px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#12091f_0%,#241332_100%)]" />
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-md">
           <SectionLabel>Club</SectionLabel>
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+          <div className="grid gap-10">
             <h2 className="font-display text-4xl leading-tight text-white sm:text-5xl">
-              틈의 세계를 함께 만드는 게임 개발 동아리
+              게임 개발 동아리
             </h2>
             <div className="space-y-5 text-base font-medium leading-8 text-brand-50/82">
               <p>
@@ -81,8 +81,8 @@ export default function Home() {
             alt="모닥불 팀원 소개 두 번째 이미지"
             width={992}
             height={1586}
-            sizes="(min-width: 1024px) 900px, 94vw"
-            className="mx-auto mt-14 w-full max-w-4xl rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.34)]"
+            sizes="(min-width: 1024px) 448px, 94vw"
+            className="mx-auto mt-14 w-full max-w-md rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.34)]"
           />
         </div>
       </section>
@@ -90,7 +90,7 @@ export default function Home() {
       <section id="game" className="relative px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
         <div className="absolute inset-0 bg-[#241332]" />
         <div className="absolute inset-x-0 top-0 h-px bg-brand-200/45" />
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-md">
           <SectionLabel>Game</SectionLabel>
           <div className="grid gap-12">
             <div>
@@ -114,8 +114,8 @@ export default function Home() {
                 alt="게임 틈의 스토리보드 이미지"
                 width={864}
                 height={1821}
-                sizes="(min-width: 1024px) 760px, 94vw"
-                className="mx-auto mt-10 w-full max-w-[760px] rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
+                sizes="(min-width: 1024px) 448px, 94vw"
+                className="mx-auto mt-10 w-full max-w-md rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
               />
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function Home() {
       >
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#241332_0%,#12091f_100%)]" />
         <div className="absolute inset-x-0 top-0 h-px bg-brand-200/45" />
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-md">
           <SectionLabel>Character</SectionLabel>
           <div className="grid gap-8">
             <Image
@@ -136,7 +136,7 @@ export default function Home() {
               alt="게임 틈의 캐릭터 시트 두 번째 이미지"
               width={1076}
               height={1462}
-              sizes="(min-width: 1024px) 520px, 94vw"
+              sizes="(min-width: 1024px) 448px, 94vw"
               className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
             />
             <Image
@@ -144,11 +144,11 @@ export default function Home() {
               alt="게임 틈의 캐릭터 모션 이미지"
               width={864}
               height={1821}
-              sizes="(min-width: 1024px) 520px, 94vw"
+              sizes="(min-width: 1024px) 448px, 94vw"
               className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
             />
           </div>
-          <div className="mx-auto mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:max-w-4xl">
+          <div className="mx-auto mt-8 grid max-w-md grid-cols-2 gap-3 sm:gap-6">
             <video
               src="/images/character-run.mp4"
               autoPlay
