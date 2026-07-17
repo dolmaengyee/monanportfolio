@@ -29,7 +29,7 @@ export default function Home() {
           id="top"
           className="relative z-10 mx-auto flex min-h-[calc(100svh-40px)] max-w-md flex-col justify-end pb-2 pt-12"
         >
-          <p className="mb-4 font-display text-lg text-[#ffdf37] drop-shadow-[0_2px_14px_rgba(255,223,55,0.42)]">
+          <p className="mb-4 font-display text-lg text-brand-300 drop-shadow-[0_2px_14px_rgba(183,140,255,0.42)]">
             모여서 만드는 이야기
           </p>
           <h1 className="max-w-[11ch] font-display text-[clamp(3.6rem,18vw,6rem)] leading-[0.9] text-white drop-shadow-[0_6px_30px_rgba(18,9,31,0.9)]">
