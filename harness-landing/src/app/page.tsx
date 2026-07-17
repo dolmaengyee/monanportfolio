@@ -1,11 +1,5 @@
 import Image from "next/image";
-import { ChevronDown, Sparkles } from "lucide-react";
-
-const fractures = [
-  "눈은 울고 있는데 입은 웃으며 괜찮다고 말하는 사람.",
-  "하나의 몸 안에서 여러 목소리가 번갈아 튀어나오는 사람.",
-  "함께 있고 싶지만 동시에 혼자 있고 싶어하는 사람.",
-];
+import { ChevronDown } from "lucide-react";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -35,7 +29,7 @@ export default function Home() {
           id="top"
           className="relative z-10 mx-auto flex min-h-[calc(100svh-40px)] max-w-6xl flex-col justify-end pb-2 pt-12"
         >
-          <p className="mb-4 font-display text-lg text-[#f5c86b] drop-shadow-[0_2px_14px_rgba(245,200,107,0.35)]">
+          <p className="mb-4 font-display text-lg text-[#ffd21f] drop-shadow-[0_2px_14px_rgba(255,210,31,0.42)]">
             모여서 만드는 이야기
           </p>
           <h1 className="max-w-[11ch] font-display text-[clamp(3.6rem,18vw,9.5rem)] leading-[0.9] text-white drop-shadow-[0_6px_30px_rgba(18,9,31,0.9)]">
@@ -117,22 +111,14 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="storybook-panel relative overflow-hidden p-5 sm:p-7">
-              <div className="mb-5 flex items-center gap-2 font-display text-brand-200">
-                <Sparkles aria-hidden="true" size={18} />
-                NPC의 균열
-              </div>
-              <div className="space-y-4">
-                {fractures.map((line) => (
-                  <p
-                    key={line}
-                    className="border-l-2 border-brand-300/70 bg-[#12091f]/42 px-4 py-3 text-sm font-semibold leading-7 text-brand-50/86"
-                  >
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </div>
+            <Image
+              src="/images/storyboard.png"
+              alt="게임 틈의 스토리보드 이미지"
+              width={864}
+              height={1821}
+              sizes="(min-width: 1024px) 520px, 94vw"
+              className="mx-auto w-full max-w-[520px] rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
+            />
           </div>
         </div>
       </section>
