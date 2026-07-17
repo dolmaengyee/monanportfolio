@@ -170,7 +170,7 @@ export default function Home() {
               muted
               loop
               playsInline
-              className="w-full rounded-sm border border-brand-200/28 bg-[#12091f] shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
+              className="aspect-[4/5] w-full rounded-sm border border-brand-200/28 bg-[#12091f] object-contain shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
               aria-label="게임 틈 캐릭터 뛰는 모션"
             />
             <video
@@ -179,7 +179,7 @@ export default function Home() {
               muted
               loop
               playsInline
-              className="w-full rounded-sm border border-brand-200/28 bg-[#12091f] shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
+              className="aspect-[4/5] w-full rounded-sm border border-brand-200/28 bg-[#12091f] object-contain shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
               aria-label="게임 틈 캐릭터 걷는 모션"
             />
           </div>
