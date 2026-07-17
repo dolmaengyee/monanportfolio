@@ -195,6 +195,22 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="goods" className="relative px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
+        <div className="absolute inset-0 bg-[#12091f]" />
+        <div className="absolute inset-x-0 top-0 h-px bg-brand-200/45" />
+        <div className="relative mx-auto max-w-md">
+          <SectionLabel>Goods</SectionLabel>
+          <Image
+            src="/images/goods.png"
+            alt="모닥불 굿즈 이미지"
+            width={1023}
+            height={1112}
+            sizes="(min-width: 1024px) 448px, 94vw"
+            className="mx-auto w-full max-w-md rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
+          />
+        </div>
+      </section>
+
       <footer className="border-t border-brand-200/35 bg-[#12091f] px-5 py-8 text-center">
         <p className="font-display text-sm tracking-[0.26em] text-brand-200">
           모닥불 | 모여서 만드는 이야기
