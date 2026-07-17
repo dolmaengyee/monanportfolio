@@ -1,16 +1,8 @@
-// =============================================================================
-// Site Content Configuration
-// =============================================================================
-// The landing template ships as an EMPTY canvas. Only siteConfig is defined
-// here because it is consumed by layout.tsx for SEO metadata and the favicon /
-// OG image generators. Claude decides the rest of the content structure based
-// on the project's actual requirements — there is no pre-baked nav/hero/cta/
-// footer data shape to fill in.
-// =============================================================================
-
 export const siteConfig = {
-  name: "My Project",
-  tagline: "Your tagline here",
-  description: "A modern landing page for your project, event, or campaign.",
-  url: "https://example.com",
+  name: "모난돌 | 미스터리 스토리 게임 틈",
+  shortName: "모난돌",
+  tagline: "모여서 만드는 이야기",
+  description:
+    "모난돌은 모여서 만드는 이야기를 뜻하는 게임 개발 동아리입니다. 현재 고장난 NPC들과 마을의 비밀을 다루는 귀여운 픽셀 미스터리 게임 틈을 제작하고 있습니다.",
+  url: "https://modakbul.vercel.app",
 };

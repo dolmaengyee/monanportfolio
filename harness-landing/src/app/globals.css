@@ -1,72 +1,73 @@
 @import "tailwindcss";
 
-/* ── Theme tokens ────────────────────────────────────
- *  Placeholders — designer replaces these during planning.
- *  Do NOT treat the defaults as the project's identity.
- *  The brand-* scale below is a neutral gray so an
- *  unstyled build still reads cleanly; the designer picks
- *  the actual hue per project and swaps every value.
- * ──────────────────────────────────────────────────── */
 @theme {
-  /* Brand scale — neutral placeholder. Designer picks the actual hue. */
-  --color-brand-50: #f8fafc;
-  --color-brand-100: #f1f5f9;
-  --color-brand-200: #e2e8f0;
-  --color-brand-300: #cbd5e1;
-  --color-brand-400: #94a3b8;
-  --color-brand-500: #64748b;
-  --color-brand-600: #475569;
-  --color-brand-700: #334155;
-  --color-brand-800: #1e293b;
-  --color-brand-900: #0f172a;
-  --color-brand-950: #020617;
+  --color-brand-50: #f1e8ff;
+  --color-brand-100: #fbf5ff;
+  --color-brand-200: #d9bcff;
+  --color-brand-300: #b78cff;
+  --color-brand-400: #9a6ee3;
+  --color-brand-500: #6b3fa0;
+  --color-brand-600: #593280;
+  --color-brand-700: #3b1e5a;
+  --color-brand-800: #2c1743;
+  --color-brand-900: #241332;
+  --color-brand-950: #12091f;
 
-  /* -- Font Family --
-   * `--font-sans` is injected by `next/font/google` in layout.tsx.
-   * If the designer adds a display font for headings, expose it as
-   * `--font-display` here too and apply via `font-[var(--font-display)]`.
-   */
-  --font-sans: var(--font-sans), system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    sans-serif;
-
-  /* -- Animations -- */
-  --animate-fade-in: fadeIn 0.8s ease-out forwards;
-  --animate-slide-up: slideUp 0.6s ease-out forwards;
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideUp {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  --font-sans: "Noto Sans KR", "Noto Sans Korean", "Apple SD Gothic Neo", system-ui,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Black Han Sans", "Noto Sans KR", "Apple SD Gothic Neo",
+    var(--font-sans);
 }
 
-/* =============================================================================
-   Base Styles
-   ============================================================================= */
+* {
+  box-sizing: border-box;
+}
+
 html {
   scroll-behavior: smooth;
+  background: #12091f;
 }
 
 body {
-  @apply bg-white text-gray-900 antialiased;
+  margin: 0;
+  background: #12091f;
+  color: #f1e8ff;
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Selection color — designer overrides per palette. */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  image-rendering: auto;
+}
+
 ::selection {
-  @apply bg-brand-200 text-brand-900;
+  background: #b78cff;
+  color: #12091f;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0;
+}
+
+.pixel-noise {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(to bottom, black, transparent 76%);
+}
+
+.storybook-panel {
+  border: 1px solid rgba(217, 188, 255, 0.32);
+  background:
+    linear-gradient(135deg, rgba(18, 9, 31, 0.88), rgba(59, 30, 90, 0.72)),
+    radial-gradient(circle at top right, rgba(183, 140, 255, 0.24), transparent 40%);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
 }

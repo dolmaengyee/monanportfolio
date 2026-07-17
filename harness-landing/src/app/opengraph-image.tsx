@@ -17,8 +17,8 @@ export default async function Image() {
           alignItems: 'flex-start',
           justifyContent: 'center',
           padding: '80px',
-          background: 'linear-gradient(135deg, #082F49 0%, #0C4A6E 50%, #0EA5E9 100%)',
-          color: 'white',
+          background: 'linear-gradient(135deg, #fbf5ff 0%, #c084fc 48%, #3b176d 100%)',
+          color: '#ffffff',
         }}
       >
         <div
@@ -36,8 +36,8 @@ export default async function Image() {
             style={{
               width: 40,
               height: 40,
-              borderRadius: 10,
-              background: 'rgba(255,255,255,0.15)',
+              borderRadius: 4,
+              background: 'rgba(255,255,255,0.18)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -45,9 +45,9 @@ export default async function Image() {
               fontWeight: 700,
             }}
           >
-            ↗
+            M
           </div>
-          <span>{siteConfig.name}</span>
+          <span>MODAKBUL</span>
         </div>
         <div
           style={{
@@ -58,7 +58,7 @@ export default async function Image() {
             maxWidth: 960,
           }}
         >
-          {siteConfig.description}
+          Stories gathered around a bright village with hidden bugs.
         </div>
       </div>
     ),
