@@ -29,7 +29,7 @@ export default function Home() {
           id="top"
           className="relative z-10 mx-auto flex min-h-[calc(100svh-40px)] max-w-6xl flex-col justify-end pb-2 pt-12"
         >
-          <p className="mb-4 font-display text-lg text-[#ffd21f] drop-shadow-[0_2px_14px_rgba(255,210,31,0.42)]">
+          <p className="mb-4 font-display text-lg text-[#ffdf37] drop-shadow-[0_2px_14px_rgba(255,223,55,0.42)]">
             모여서 만드는 이야기
           </p>
           <h1 className="max-w-[11ch] font-display text-[clamp(3.6rem,18vw,9.5rem)] leading-[0.9] text-white drop-shadow-[0_6px_30px_rgba(18,9,31,0.9)]">
@@ -92,7 +92,7 @@ export default function Home() {
         <div className="absolute inset-x-0 top-0 h-px bg-brand-200/45" />
         <div className="relative mx-auto max-w-6xl">
           <SectionLabel>Game</SectionLabel>
-          <div className="grid gap-12 lg:grid-cols-[1fr_0.92fr] lg:items-center">
+          <div className="grid gap-12">
             <div>
               <p className="font-display text-lg text-brand-300">미스터리 스토리 게임</p>
               <h2 className="mt-3 font-display text-6xl leading-none text-white sm:text-8xl">
@@ -109,16 +109,15 @@ export default function Home() {
                   누군가는 그 틈을 파고들어, 그들을 조금씩 고장나게 만들었습니다.
                 </p>
               </div>
+              <Image
+                src="/images/storyboard.png"
+                alt="게임 틈의 스토리보드 이미지"
+                width={864}
+                height={1821}
+                sizes="(min-width: 1024px) 760px, 94vw"
+                className="mx-auto mt-10 w-full max-w-[760px] rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
+              />
             </div>
-
-            <Image
-              src="/images/storyboard.png"
-              alt="게임 틈의 스토리보드 이미지"
-              width={864}
-              height={1821}
-              sizes="(min-width: 1024px) 520px, 94vw"
-              className="mx-auto w-full max-w-[520px] rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
-            />
           </div>
         </div>
       </section>
@@ -131,7 +130,7 @@ export default function Home() {
         <div className="absolute inset-x-0 top-0 h-px bg-brand-200/45" />
         <div className="relative mx-auto max-w-6xl">
           <SectionLabel>Character</SectionLabel>
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+          <div className="grid gap-8">
             <Image
               src="/images/character-sheet-2.png"
               alt="게임 틈의 캐릭터 시트 두 번째 이미지"
@@ -149,7 +148,7 @@ export default function Home() {
               className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
             />
           </div>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6">
+          <div className="mx-auto mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:max-w-4xl">
             <video
               src="/images/character-run.mp4"
               autoPlay
