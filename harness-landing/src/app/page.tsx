@@ -47,7 +47,7 @@ export default function Home() {
             </p>
             <p className="text-brand-100/82">
               모난돌은 고장난 NPC들과 마을의 비밀을 따라가는 미스터리
-              스토리 게임 <strong className="font-display text-white">틈</strong>을
+              스토리 게임 <strong className="font-semibold text-white">틈</strong>을
               만들고 있습니다.
             </p>
           </div>
