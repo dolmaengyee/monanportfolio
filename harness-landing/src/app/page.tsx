@@ -39,14 +39,14 @@ export default function Home() {
             모여서 만드는 이야기
           </p>
           <h1 className="max-w-[11ch] font-display text-[clamp(3.6rem,18vw,9.5rem)] leading-[0.9] text-white drop-shadow-[0_6px_30px_rgba(18,9,31,0.9)]">
-            모난돌
+            모닥불
           </h1>
           <div className="mt-7 max-w-2xl space-y-5 text-[1.03rem] font-semibold leading-8 text-brand-50/90 sm:text-xl sm:leading-9">
             <p>
               귀여운 픽셀 마을 아래, 아무도 말하지 못한 틈이 숨어 있습니다.
             </p>
             <p className="text-brand-100/82">
-              모난돌은 고장난 NPC들과 마을의 비밀을 따라가는 미스터리
+              모닥불은 고장난 NPC들과 마을의 비밀을 따라가는 미스터리
               스토리 게임 <strong className="font-semibold text-brand-100/82">틈</strong>을
               만들고 있습니다.
             </p>
@@ -71,20 +71,20 @@ export default function Home() {
             </h2>
             <div className="space-y-5 text-base font-medium leading-8 text-brand-50/82">
               <p>
-                모난돌이라는 이름에는 “모여서 만드는 이야기”라는 뜻이 담겨
+                모닥불이라는 이름에는 “모여서 만드는 이야기”라는 뜻이 담겨
                 있습니다. 우리는 각자의 아이디어를 모아 하나의 세계관을 만들고,
                 그 안에서 살아가는 캐릭터와 사건, 선택의 흐름을 설계합니다.
               </p>
               <p>
                 기획, 스토리, 아트, 개발은 따로 떨어진 역할이 아니라 하나의
-                마을을 완성하는 조각입니다. 모난돌은 그 조각들이 맞물릴 때
+                마을을 완성하는 조각입니다. 모닥불은 그 조각들이 맞물릴 때
                 생기는 작은 어긋남까지 게임의 이야기로 가져갑니다.
               </p>
             </div>
           </div>
           <Image
             src="/images/team-intro-2.png"
-            alt="모난돌 팀원 소개 두 번째 이미지"
+            alt="모닥불 팀원 소개 두 번째 이미지"
             width={992}
             height={1586}
             sizes="(min-width: 1024px) 900px, 94vw"
@@ -188,7 +188,7 @@ export default function Home() {
 
       <footer className="border-t border-brand-200/35 bg-[#12091f] px-5 py-8 text-center">
         <p className="font-display text-sm tracking-[0.26em] text-brand-200">
-          모난돌 | 모여서 만드는 이야기
+          모닥불 | 모여서 만드는 이야기
         </p>
       </footer>
     </main>

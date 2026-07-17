@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    "모난돌",
+    "모닥불",
     "틈",
     "게임 개발 동아리",
     "귀여운 픽셀 미스터리",
