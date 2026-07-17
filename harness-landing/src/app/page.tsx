@@ -47,7 +47,7 @@ export default function Home() {
             </p>
             <p className="text-brand-100/82">
               모난돌은 고장난 NPC들과 마을의 비밀을 따라가는 미스터리
-              스토리 게임 <strong className="font-display text-brand-200">틈</strong>을
+              스토리 게임 <strong className="font-display text-white">틈</strong>을
               만들고 있습니다.
             </p>
           </div>
@@ -83,8 +83,8 @@ export default function Home() {
             </div>
           </div>
           <Image
-            src="/images/team-intro.png"
-            alt="모난돌 팀원 소개 이미지"
+            src="/images/team-intro-2.png"
+            alt="모난돌 팀원 소개 두 번째 이미지"
             width={992}
             height={1586}
             sizes="(min-width: 1024px) 900px, 94vw"
@@ -161,6 +161,26 @@ export default function Home() {
               height={1821}
               sizes="(min-width: 1024px) 520px, 94vw"
               className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
+            />
+          </div>
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6">
+            <video
+              src="/images/character-run.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full rounded-sm border border-brand-200/28 bg-[#12091f] shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
+              aria-label="게임 틈 캐릭터 뛰는 모션"
+            />
+            <video
+              src="/images/character-walk.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full rounded-sm border border-brand-200/28 bg-[#12091f] shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
+              aria-label="게임 틈 캐릭터 걷는 모션"
             />
           </div>
         </div>
