@@ -21,7 +21,7 @@ export default function Home() {
           loop
           playsInline
           preload="auto"
-          className="absolute inset-0 h-full w-full bg-[#12091f] object-contain object-center sm:object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-center"
           aria-label="게임 틈의 첫 화면 배경 영상"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(18,9,31,0.18)_42%,rgba(18,9,31,0.72)_76%,#12091f_100%)]" />
