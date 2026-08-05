@@ -14,13 +14,15 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#12091f] text-brand-50">
       <section className="relative min-h-[100svh] px-5 pb-12 pt-5 sm:px-8 lg:px-12">
-        <Image
-          src="/images/teum-village-2.png"
-          alt="게임 틈의 두 번째 픽셀 마을 배경"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
+        <video
+          src="/images/hero-video.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          aria-label="게임 틈의 첫 화면 배경 영상"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(18,9,31,0.18)_42%,rgba(18,9,31,0.72)_76%,#12091f_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,#12091f_100%)]" />
