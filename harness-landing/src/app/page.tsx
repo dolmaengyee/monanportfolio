@@ -29,7 +29,7 @@ export default function Home() {
 
         <div
           id="top"
-          className="relative z-10 mx-auto flex min-h-[calc(100svh-40px)] max-w-md flex-col justify-end pb-2 pt-12"
+          className="relative z-10 mx-auto flex min-h-[calc(100svh-40px)] max-w-md flex-col justify-start pb-2 pt-[calc(56.25vw+1rem)] sm:pt-[min(calc(56.25vw+1.5rem),34rem)]"
         >
           <h1 className="max-w-[11ch] font-display text-[clamp(3.6rem,18vw,6rem)] leading-[0.9] text-white drop-shadow-[0_6px_30px_rgba(18,9,31,0.9)]">
             모닥불
