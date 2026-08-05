@@ -156,48 +156,12 @@ export default function Home() {
           <SectionLabel>Character</SectionLabel>
           <div className="grid gap-8">
             <Image
-              src="/images/aria-character-sheet.jpg"
-              alt="게임 틈의 아리아 캐릭터 소개 시트"
-              width={1280}
-              height={853}
+              src="/images/npc-intro.png"
+              alt="게임 틈의 NPC 소개 이미지"
+              width={1024}
+              height={1536}
               sizes="(min-width: 1024px) 448px, 94vw"
               className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
-            />
-            <Image
-              src="/images/character-sheet-2.png"
-              alt="게임 틈의 캐릭터 시트 두 번째 이미지"
-              width={1076}
-              height={1462}
-              sizes="(min-width: 1024px) 448px, 94vw"
-              className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
-            />
-            <Image
-              src="/images/character-motion.png"
-              alt="게임 틈의 캐릭터 모션 이미지"
-              width={864}
-              height={1821}
-              sizes="(min-width: 1024px) 448px, 94vw"
-              className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
-            />
-          </div>
-          <div className="mx-auto mt-8 grid max-w-md grid-cols-2 gap-3 sm:gap-6">
-            <video
-              src="/images/character-run.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="aspect-[4/5] w-full rounded-sm border border-brand-200/28 bg-[#12091f] object-contain shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
-              aria-label="게임 틈 캐릭터 뛰는 모션"
-            />
-            <video
-              src="/images/character-walk.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="aspect-[4/5] w-full rounded-sm border border-brand-200/28 bg-[#12091f] object-contain shadow-[0_18px_54px_rgba(0,0,0,0.3)]"
-              aria-label="게임 틈 캐릭터 걷는 모션"
             />
           </div>
         </div>
