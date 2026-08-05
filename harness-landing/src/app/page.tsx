@@ -156,6 +156,14 @@ export default function Home() {
           <SectionLabel>Character</SectionLabel>
           <div className="grid gap-8">
             <Image
+              src="/images/protagonist-intro.png"
+              alt="게임 틈의 주인공 소개 이미지"
+              width={1024}
+              height={1536}
+              sizes="(min-width: 1024px) 448px, 94vw"
+              className="mx-auto w-full rounded-sm border border-brand-200/28 shadow-[0_24px_80px_rgba(0,0,0,0.38)]"
+            />
+            <Image
               src="/images/npc-intro.png"
               alt="게임 틈의 NPC 소개 이미지"
               width={1024}
